@@ -34,8 +34,13 @@ const invoke = async (interaction) => {
     //     .setURL(`${walletUrl}`),
     // ]);
 
+    const yourPubkeyText =
+      "La clave pública de tu cuenta en Nostr es `" + userWallet.pubkey + "`";
+
     handleBotResponse(interaction, {
-      content: `Balance: ${formatter(0, 0).format(sats / 1000)} satoshis`,
+      content: `Balance: **${formatter(0, 0).format(
+        sats / 1000
+      )} satoshis** \n\n${yourPubkeyText}`,
       ephemeral: true,
       // components: [row],
     });
