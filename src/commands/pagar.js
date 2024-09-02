@@ -25,7 +25,7 @@ const invoke = async (interaction) => {
 
     await interaction.deferReply({ ephemeral: true });
 
-    const wallet = await getOrCreateAccount(user.id);
+    const wallet = await getOrCreateAccount(user.id, user.username);
 
     const paymentRequest = interaction.options.get(`bolt11`).value;
 

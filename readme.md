@@ -3,9 +3,10 @@
 Rename .env.example to .env and replace your enviroment vars:
 
 ```
-CLIENT_TOKEN=
-MONGODB_URI=
+CLIENT_TOKEN=YOUR_BOT_TOKEN_ID
+MONGODB_URI=MONGODB_URI=mongodb+srv://<username>:<password>@<url>/<dbname>
 POOL_ADDRESS=pozo@lacrypta.ar
+SALT=123456789 // for sk encrypt
 ```
 
 # Available commands

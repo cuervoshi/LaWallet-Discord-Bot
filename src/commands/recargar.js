@@ -37,7 +37,7 @@ const invoke = async (interaction) => {
         "No se permiten saldos negativos"
       );
 
-    const wallet = await getOrCreateAccount(user.id);
+    const wallet = await getOrCreateAccount(user.id, user.username);
 
     const invoiceDetails = await wallet.generateInvoice({
       milisatoshis: amount * 1000,

@@ -3,7 +3,6 @@ import { getOrCreateAccount } from "../handlers/accounts.js";
 import {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
-  handleBotResponse,
   validateAmountAndBalance,
 } from "../utils/helperFunctions.js";
 import { updateUserRank } from "../handlers/donate.js";
@@ -54,8 +53,12 @@ const invoke = async (interaction) => {
       receiver.user.id
     );
 
-    const senderWallet = await getOrCreateAccount(user.id);
-    const receiverWallet = await getOrCreateAccount(receiverData.user.id);
+    const senderWallet = await getOrCreateAccount(user.id, user.username);
+
+    const receiverWallet = await getOrCreateAccount(
+      receiverData.user.id,
+      receiverData.user.username
+    );
 
     if (!senderWallet || !receiverWallet)
       return FollowUpEphemeralResponse(

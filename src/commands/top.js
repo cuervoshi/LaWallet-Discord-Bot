@@ -33,7 +33,7 @@ const invoke = async (interaction) => {
     await interaction.deferReply();
     const typeParam = interaction.options.get(`tipo`);
 
-    const wallet = await getOrCreateAccount(user.id);
+    const wallet = await getOrCreateAccount(user.id, user.username);
     const cleanedType =
       typeParam?.value && availableTypes.includes(typeParam.value)
         ? typeParam.value

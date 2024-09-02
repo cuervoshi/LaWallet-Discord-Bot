@@ -1,7 +1,6 @@
 const AuthorConfig = {
-  name: "LNBot",
-  iconURL:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lightning_Network.svg/2048px-Lightning_Network.svg.png",
+  name: "LaWallet Bot",
+  iconURL: "https://app.lawallet.ar/icons/icon-512x512.png",
 };
 
 export { AuthorConfig };

@@ -34,7 +34,7 @@ const invoke = async (interaction) => {
 
     const amount = parseInt(interaction.options.get(`monto`).value);
 
-    const wallet = await getOrCreateAccount(user.id);
+    const wallet = await getOrCreateAccount(user.id, user.username);
     const senderBalance = await wallet.getBalance("BTC");
 
     const isValidAmount = validateAmountAndBalance(

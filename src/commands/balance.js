@@ -23,7 +23,7 @@ const invoke = async (interaction) => {
     const user = interaction.user;
     if (!user) throw new Error("No user interaction found");
 
-    const userWallet = await getOrCreateAccount(user.id);
+    const userWallet = await getOrCreateAccount(user.id, user.username);
     const sats = await userWallet.getBalance("BTC");
 
     // const row = new ActionRowBuilder().addComponents([

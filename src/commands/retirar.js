@@ -38,7 +38,7 @@ const invoke = async (interaction) => {
     const address = interaction.options.get(`address`).value;
     const amount = parseInt(interaction.options.get(`monto`).value);
 
-    const wallet = await getOrCreateAccount(user.id);
+    const wallet = await getOrCreateAccount(user.id, user.username);
     const balance = await wallet.getBalance("BTC");
     const balanceInSats = balance / 1000;
 
