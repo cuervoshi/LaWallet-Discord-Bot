@@ -1,0 +1,36 @@
+{
+	"name": "lightning-bot",
+	"version": "1.0.0",
+	"description": "Lightning Network Zaps bot",
+	"main": "Bot.js",
+	"keywords": [],
+	"author": "Cuervo",
+	"license": "MIT",
+	"dependencies": {
+		"@lawallet/sdk": "0.1.27",
+		"@nostr-dev-kit/ndk": "^2.10.0",
+		"chalk": "^5.3.0",
+		"dedent-js": "^1.0.1",
+		"discord.js": "^14.15.3",
+		"dotenv": "^16.4.5",
+		"lnurl-pay": "^3.0.1",
+		"mongoose": "^8.6.0",
+		"qrcode": "^1.5.4"
+	},
+	"imports": {
+		"#events/*": "./src/events/*",
+		"#commands/*": "./src/commands/*.js"
+	},
+	"type": "module",
+	"scripts": {
+		"start": "node ./Bot.js"
+	},
+	"overrides": {
+		"nostr-tools": "npm:@lawallet/nostr-tools@2.7.2"
+	},
+	"yarn": {
+		"overrides": {
+			"nostr-tools": "npm:@lawallet/nostr-tools@2.7.2"
+		}
+	}
+}
