@@ -31,8 +31,6 @@ const invoke = async (interaction) => {
 
     const faucets = await getAllOpenFaucets(user.id);
 
-    console.log(faucets);
-
     if (!faucets.length) {
       EphemeralMessageResponse(
         interaction,

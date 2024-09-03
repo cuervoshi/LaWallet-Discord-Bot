@@ -16,21 +16,27 @@ const create = () => {
 // Called by the interactionCreate event listener when the corresponding command is invoked
 const invoke = async (interaction) => {
   try {
-    let cmdOutput = ``;
+    let cmdOutput = [];
     commandsArray.forEach(async (cmd) => {
       if (cmd.name != `ayuda`) {
         let params = ``;
         cmd.options.forEach(async (opt) => {
           params += `${opt.name}: <${opt.type}> `;
         });
-        cmdOutput += `
-          - ${cmd.name}: ${cmd.description}\n Ejemplo: \`/${cmd.name}${
-          params ? ` ${params.trimEnd()}\n` : "\n"
-        }\`
-        `;
+
+        cmdOutput.push({
+          name: `${cmd.name[0].toUpperCase()}${cmd.name.substring(
+            1,
+            cmd.name.length
+          )} - (\`/${cmd.name}${params ? ` ${params.trimEnd()}` : ""}\`)`,
+          value: `${cmd.description}\n`,
+        });
       }
-      cmdOutput = dedent(cmdOutput);
+      // Output[cmdOutput.length - 1] = dedent(cmdOutput);
     });
+
+    if (!cmdOutput.length)
+      return EphemeralMessageResponse(interaction, "No hay comandos");
 
     const embed = new EmbedBuilder()
       .setColor(`#0099ff`)
@@ -47,7 +53,7 @@ const invoke = async (interaction) => {
           value: `¡Este es un servicio de custodia, no controlas tu dinero hasta que lo retiras!`,
         },
         { name: `\u200B`, value: `\u200B` },
-        { name: `Comandos`, value: cmdOutput }
+        ...cmdOutput.map((cmd) => cmd)
       );
 
     interaction.reply({ embeds: [embed], ephemeral: true });
