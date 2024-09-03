@@ -24,7 +24,9 @@ const invoke = async (interaction) => {
           params += `${opt.name}: <${opt.type}> `;
         });
         cmdOutput += `
-          - ${cmd.name}: ${cmd.description} \`/${cmd.name} ${params}\`
+          - ${cmd.name}: ${cmd.description}\n Ejemplo: \`/${cmd.name}${
+          params ? ` ${params.trimEnd()}\n` : "\n"
+        }\`
         `;
       }
       cmdOutput = dedent(cmdOutput);
