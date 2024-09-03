@@ -10,6 +10,12 @@ async function invoke(interaction) {
         interaction
       );
     }
+
+    if (interaction.isButton()) {
+      (await import(`#components/buttons/${interaction.customId}`)).invoke(
+        interaction
+      );
+    }
   } catch (err) {
     console.log("Error al enviar comando");
     console.log(err);

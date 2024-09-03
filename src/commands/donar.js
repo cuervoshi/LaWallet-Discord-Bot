@@ -43,7 +43,7 @@ const invoke = async (interaction) => {
     );
 
     if (!isValidAmount.status)
-      return FollowUpEphemeralResponse(Interaction, isValidAmount.content);
+      return FollowUpEphemeralResponse(interaction, isValidAmount.content);
 
     const invoice = await lnurl.requestInvoice({
       lnUrlOrAddress: process.env.POOL_ADDRESS,

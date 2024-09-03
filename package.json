@@ -20,7 +20,8 @@
 	},
 	"imports": {
 		"#events/*": "./src/events/*",
-		"#commands/*": "./src/commands/*.js"
+		"#commands/*": "./src/commands/*.js",
+		"#components/buttons/*": "./src/components/buttons/*.js"
 	},
 	"type": "module",
 	"scripts": {

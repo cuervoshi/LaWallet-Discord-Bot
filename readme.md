@@ -30,4 +30,17 @@ yarn install & yarn start
 # TO - DO
 
 - [ ] Solicitar un pago (/solicitar)
+      Schema:
+      sk
+      owner (discord_id)
+      faucetId
+      amount
+      uses
+      maxUses
+      claimers
+
+      Crear faucet genera una nueva cuenta, le quita los fondos al owner y los envia a esta nueva cuenta.
+      En cada reclamo, vamos a ir aumentando uses siempre asegurandonos que no supere maxUses.
+      Se transfieren los sats una única vez a cada usuario desde la sk del faucet.
+
 - [ ] Faucet (/regalar + claim)

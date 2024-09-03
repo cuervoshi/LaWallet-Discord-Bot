@@ -1,4 +1,8 @@
-import { SlashCommandBuilder } from "discord.js";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  SlashCommandBuilder,
+} from "discord.js";
 import { getOrCreateAccount } from "../handlers/accounts.js";
 import {
   EphemeralMessageResponse,
@@ -42,7 +46,6 @@ const invoke = async (interaction) => {
         sats / 1000
       )} satoshis** \n\n${yourPubkeyText}`,
       ephemeral: true,
-      // components: [row],
     });
   } catch (err) {
     console.log(err);
