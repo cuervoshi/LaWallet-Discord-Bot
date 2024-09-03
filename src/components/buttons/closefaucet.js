@@ -40,25 +40,25 @@ const invoke = async (interaction) => {
         "No puedes cerrar un faucet que no te pertenece"
       );
 
+    const fieldsInfo = interaction.message.embeds[0].fields;
+
+    const embed = new EmbedBuilder()
+      .setAuthor(AuthorConfig)
+      .addFields(fieldsInfo)
+      .setFooter({
+        text: `Identificador: ${faucetId}`,
+      });
+
+    const row = new ActionRowBuilder().addComponents([
+      new ButtonBuilder()
+        .setCustomId("closefaucet")
+        .setLabel("El faucet ha sido cerrado por su autor")
+        .setEmoji({ name: `✖️` })
+        .setStyle(2)
+        .setDisabled(true),
+    ]);
+
     if (faucet.closed) {
-      const fieldsInfo = interaction.message.embeds[0].fields;
-
-      const embed = new EmbedBuilder()
-        .setAuthor(AuthorConfig)
-        .addFields(fieldsInfo)
-        .setFooter({
-          text: `Identificador: ${faucetId}`,
-        });
-
-      const row = new ActionRowBuilder().addComponents([
-        new ButtonBuilder()
-          .setCustomId("closefaucet")
-          .setLabel("El faucet ha sido cerrado por su autor")
-          .setEmoji({ name: `✖️` })
-          .setStyle(2)
-          .setDisabled(true),
-      ]);
-
       await interaction.message.edit({
         embeds: [embed],
         components: [row],
@@ -103,10 +103,30 @@ const invoke = async (interaction) => {
         },
       });
 
-      await interaction.message.edit({
-        embeds: [embed],
-        components: [row],
-      });
+      if (closedFaucet.closed) {
+        try {
+          if (closedFaucet.channelId && closedFaucet.messageId) {
+            const channel = await interaction.guild.channels.fetch(
+              closedFaucet.channelId
+            );
+
+            if (channel) {
+              const message = await channel.messages.fetch(
+                closedFaucet.messageId
+              );
+
+              if (message) {
+                await message.edit({
+                  embeds: [embed],
+                  components: [row],
+                });
+              }
+            }
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
     }
   } catch {
     EphemeralMessageResponse(interaction, "Ocurrió un error");
