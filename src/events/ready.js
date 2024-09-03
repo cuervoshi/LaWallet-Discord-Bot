@@ -4,13 +4,15 @@ import { log } from "../handlers/log.js";
 const once = true;
 const name = "ready";
 
+export let commandsArray = [];
+
 async function invoke(client) {
+  commandsArray = [];
+
   const commands = fs
     .readdirSync("./src/commands")
     .filter((file) => file.endsWith(".js"))
     .map((file) => file.slice(0, -3));
-
-  const commandsArray = [];
 
   for (let command of commands) {
     log(`Added /${command} slash command`, "info");
