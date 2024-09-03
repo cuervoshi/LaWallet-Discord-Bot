@@ -5,9 +5,10 @@ const faucetSchema = new mongoose.Schema(
     owner_id: { type: String, required: true },
     owner_username: { type: String, required: true },
     amount: { type: Number, required: true },
-    uses: { type: Number, required: true },
     maxUses: { type: Number, required: true },
-    claimers_ids: [{ type: String, required: true }],
+    claimersIds: [{ type: String, required: true }],
+    channelId: { type: String, required: false },
+    messageId: { type: String, required: false },
     closed: { type: Boolean, required: false },
   },
   { timestamps: true }

@@ -1,14 +1,10 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  SlashCommandBuilder,
-} from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import { getOrCreateAccount } from "../handlers/accounts.js";
+import { formatter } from "../utils/helperFormatter.js";
 import {
   EphemeralMessageResponse,
   handleBotResponse,
 } from "../utils/helperFunctions.js";
-import { formatter } from "../utils/helperFormatter.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {

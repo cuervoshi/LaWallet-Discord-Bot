@@ -34,7 +34,8 @@ const EphemeralMessageResponse = async (Interaction, content) => {
 
 const FollowUpEphemeralResponse = async (Interaction, content) => {
   await Interaction.deleteReply();
-  await Interaction.followUp({
+
+  return Interaction.followUp({
     content: content,
     ephemeral: true,
   });
