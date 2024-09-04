@@ -57,7 +57,10 @@ const invoke = async (interaction) => {
             );
 
             let milisatoshis = await faucetWallet.getBalance("BTC");
-            if (!milisatoshis || milisatoshis < 1000) return;
+            if (!milisatoshis || milisatoshis < 1000) {
+              await closeFaucet(faucetId);
+              return;
+            }
 
             const invoiceDetails = await wallet.generateInvoice({
               milisatoshis,
@@ -122,7 +125,6 @@ const invoke = async (interaction) => {
                 } sats).\n`;
               },
             });
-            return;
           } catch (err) {
             console.log(err);
             return;
@@ -135,7 +137,9 @@ const invoke = async (interaction) => {
         .setAuthor(AuthorConfig)
         .addFields({
           name: `Comando ejecutado exitosamente`,
-          value: msgOutput,
+          value: msgOutput.length
+            ? msgOutput
+            : "Se cerraron todos los faucets abiertos, no había fondos para retornar.",
         });
 
       interaction.editReply({ embeds: [embed], ephemeral: true });
