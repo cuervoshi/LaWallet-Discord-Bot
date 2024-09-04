@@ -3,6 +3,34 @@ import { log } from "./src/handlers/log.js";
 import {} from "dotenv/config";
 import fs from "fs";
 import { Client, GatewayIntentBits } from "discord.js";
+import NDK from "@nostr-dev-kit/ndk";
+
+import WebSocket from "ws";
+Object.assign(global, { WebSocket });
+
+export const connectedNdk = new NDK({
+  explicitRelayUrls: ["wss://relay.lawallet.ar/"],
+  autoConnectUserRelays: false,
+  autoFetchUserMutelist: false,
+});
+
+let knownRelays = [];
+
+function validateRelaysStatus() {
+  let connectedRelays = connectedNdk.pool.connectedRelays();
+
+  knownRelays.map((relayUrl) => {
+    let isRelayConnected = connectedRelays.find(
+      (relay) => relay.url === relayUrl
+    );
+
+    if (!isRelayConnected) {
+      let disconnectedRelay = connectedNdk.pool.relays.get(relayUrl);
+
+      if (disconnectedRelay) disconnectedRelay.connect();
+    }
+  });
+}
 
 async function runBot() {
   // Create a new Client with the Guilds intent
@@ -33,6 +61,14 @@ async function runBot() {
 
   // Login with the credentials stored in .env
   client.login(process.env.BOT_TOKEN);
+
+  connectedNdk.pool.relays.forEach(async (relay) => {
+    console.log("conectando relay: ", relay.url);
+    knownRelays.push(relay.url);
+    await relay.connect();
+  });
+
+  setInterval(validateRelaysStatus, 30000);
 
   log("Started connecting to MongoDB...", "warn");
 
