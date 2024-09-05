@@ -33,54 +33,62 @@ async function handleClaim(faucet, interaction) {
 }
 
 const claimFaucet = async (faucet, interaction) => {
-  let userId = interaction.user.id;
-  let faucetId = faucet._id.toString();
+  try {
+    let userId = interaction.user.id;
+    let faucetId = faucet._id.toString();
 
-  const userWallet = await getOrCreateAccount(
-    userId,
-    interaction.user.username
-  );
+    const userWallet = await getOrCreateAccount(
+      userId,
+      interaction.user.username
+    );
 
-  const faucetWallet = await getOrCreateAccount(faucetId, "account-faucet");
+    const faucetWallet = await getOrCreateAccount(faucetId, "account-faucet");
 
-  const invoiceDetails = await userWallet.generateInvoice({
-    milisatoshis: faucet.amount * 1000,
-  });
+    const invoiceDetails = await userWallet.generateInvoice({
+      milisatoshis: faucet.amount * 1000,
+    });
 
-  await faucetWallet.payInvoice({
-    paymentRequest: invoiceDetails.pr,
-    onSuccess: async () => {
-      const content = interaction.message.embeds[0].fields[0].value;
-      const subStr = content.indexOf(">");
+    await faucetWallet.payInvoice({
+      paymentRequest: invoiceDetails.pr,
+      onSuccess: async () => {
+        const content = interaction.message.embeds[0].fields[0].value;
+        const subStr = content.indexOf(">");
 
-      let senderUserId = subStr !== -1 ? content.substring(2, subStr) : "";
-      let fieldInfo = interaction.message.embeds[0].fields[0];
+        let senderUserId = subStr !== -1 ? content.substring(2, subStr) : "";
+        let fieldInfo = interaction.message.embeds[0].fields[0];
 
-      if (senderUserId)
-        await updateUserRank(senderUserId, "comunidad", faucet.amount);
+        if (senderUserId)
+          await updateUserRank(senderUserId, "comunidad", faucet.amount);
 
-      await addClaimerOnFaucet(faucetId, userId);
+        await addClaimerOnFaucet(faucetId, userId);
 
-      await updateMessage(faucetId, fieldInfo, interaction.message);
+        await updateMessage(faucetId, fieldInfo, interaction.message);
 
-      const new_user_balance = await userWallet.getBalance("BTC");
+        const new_user_balance = await userWallet.getBalance("BTC");
 
-      FollowUpEphemeralResponse(
-        interaction,
-        `Recibiste ${
-          faucet.amount
-        } sats por reclamar este faucet, tu nuevo balance es: ${(
-          new_user_balance / 1000
-        ).toFixed(0)} satoshis`
-      );
-    },
-    onError: () => {
-      EphemeralMessageResponse(
-        interaction,
-        "Ocurrió un error al reclamar la factura"
-      );
-    },
-  });
+        FollowUpEphemeralResponse(
+          interaction,
+          `Recibiste ${
+            faucet.amount
+          } sats por reclamar este faucet, tu nuevo balance es: ${(
+            new_user_balance / 1000
+          ).toFixed(0)} satoshis`
+        );
+      },
+      onError: () => {
+        EphemeralMessageResponse(
+          interaction,
+          "Ocurrió un error al reclamar la factura"
+        );
+      },
+    });
+  } catch (err) {
+    EphemeralMessageResponse(
+      interaction,
+      "Ocurrió un error al reclamar la factura"
+    );
+    return;
+  }
 };
 
 const updateMessage = async (faucetId, fieldInfo, message) => {
