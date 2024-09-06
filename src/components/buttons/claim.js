@@ -2,7 +2,11 @@ import dedent from "dedent-js";
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder } from "discord.js";
 import { getOrCreateAccount } from "../../handlers/accounts.js";
 import { updateUserRank } from "../../handlers/donate.js";
-import { getFaucet, addClaimerOnFaucet } from "../../handlers/faucet.js";
+import {
+  getFaucet,
+  addClaimerOnFaucet,
+  closeFaucet,
+} from "../../handlers/faucet.js";
 import { SimpleLock } from "../../handlers/SimpleLock.js";
 import { AuthorConfig } from "../../utils/helperConfig.js";
 import {
@@ -126,7 +130,6 @@ const updateMessage = async (faucetId, fieldInfo, message) => {
       });
 
     const disabledFaucet = faucet.maxUses <= uses;
-
     const components = [
       new ButtonBuilder()
         .setCustomId("claim")
@@ -138,14 +141,15 @@ const updateMessage = async (faucetId, fieldInfo, message) => {
         .setDisabled(disabledFaucet),
     ];
 
-    if (!disabledFaucet)
-      components.push(
-        new ButtonBuilder()
-          .setCustomId("closefaucet")
-          .setLabel("Cerrar faucet")
-          .setEmoji({ name: `✖️` })
-          .setStyle(2)
-      );
+    !disabledFaucet
+      ? components.push(
+          new ButtonBuilder()
+            .setCustomId("closefaucet")
+            .setLabel("Cerrar faucet")
+            .setEmoji({ name: `✖️` })
+            .setStyle(2)
+        )
+      : await closeFaucet(faucetId);
 
     const row = new ActionRowBuilder().addComponents(components);
 

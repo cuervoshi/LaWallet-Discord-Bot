@@ -30,7 +30,7 @@ const invoke = async (interaction) => {
         {
           name: `Exportaste tu cuenta`,
           value:
-            "A continuación podrás copiar la clave privada hexadecimal de tu cuenta.\nIngresa en https://app.lawallet.ar/ para conectarte",
+            "A continuación podrás copiar la clave privada hexadecimal de tu cuenta.\nIngresa en https://app.lawallet.ar/login para conectarte",
         },
         { name: `\u200B`, value: `\u200B` },
         { name: "Clave privada", value: wallet.signer.privateKey },
@@ -41,7 +41,7 @@ const invoke = async (interaction) => {
         }
       );
 
-    const editedReply = await interaction.editReply({
+    await interaction.editReply({
       embeds: [embed],
       ephemeral: true,
     });
