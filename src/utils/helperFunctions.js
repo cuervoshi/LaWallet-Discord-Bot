@@ -17,6 +17,15 @@ const validateAmountAndBalance = (amount, balance) => {
   };
 };
 
+export const normalizeLNDomain = (domain) => {
+  try {
+    const iURL = new URL(domain);
+    return iURL.hostname;
+  } catch {
+    return "";
+  }
+};
+
 const handleBotResponse = async (Interaction, objConfig) => {
   Interaction.deferred
     ? await Interaction.editReply(objConfig)

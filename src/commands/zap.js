@@ -66,11 +66,11 @@ const invoke = async (interaction) => {
         "Ocurrió un error al obtener la información del usuario"
       );
 
-    // if (senderWallet.pubkey === receiverWallet.pubkey)
-    //   return FollowUpEphemeralResponse(
-    //     interaction,
-    //     "No puedes enviarte sats a vos mismo."
-    //   );
+    if (senderWallet.pubkey === receiverWallet.pubkey)
+      return FollowUpEphemeralResponse(
+        interaction,
+        "No puedes enviarte sats a vos mismo."
+      );
 
     const senderBalance = await senderWallet.getBalance("BTC");
     console.log(senderBalance);

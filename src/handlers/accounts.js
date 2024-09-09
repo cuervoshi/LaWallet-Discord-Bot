@@ -6,7 +6,7 @@ import { connectedNdk } from "../../Bot.js";
 
 const SALT = process.env.SALT ?? "";
 const LW_DEFAULT_DOMAIN = "https://lawallet.ar";
-const LNDOMAIN = process.env.LIGHTNING_DOMAIN ?? LW_DEFAULT_DOMAIN;
+export const LNDOMAIN = process.env.LIGHTNING_DOMAIN ?? LW_DEFAULT_DOMAIN;
 
 const federationConfig = createFederationConfig({
   endpoints: { lightningDomain: LNDOMAIN },
@@ -26,8 +26,8 @@ const createAccount = async (discord_id, discord_username) => {
 
     const wallet = new Wallet({ signer, ndk: connectedNdk, federationConfig });
 
-    if (federationConfig.lightningDomain !== LW_DEFAULT_DOMAIN)
-      await wallet.registerHandle(discord_username);
+    // if (federationConfig.lightningDomain !== LW_DEFAULT_DOMAIN)
+    //   await wallet.registerHandle(discord_username);
 
     return wallet;
   } catch (err) {

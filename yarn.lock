@@ -93,10 +93,10 @@
     tslib "^2.6.2"
     ws "^8.16.0"
 
-"@lawallet/sdk@0.1.36":
-  version "0.1.36"
-  resolved "https://registry.yarnpkg.com/@lawallet/sdk/-/sdk-0.1.36.tgz#d0dd8ac274bee8f1f1ea0ef3d687e662359378a8"
-  integrity sha512-Zxo+gk14Tds5gwtx/y++e7WsPYYYmr/C4SDJTpzRSxyL6NL4SmjAHjLhaoA8kg5unLK1xAHg1K/B2vP6dankRA==
+"@lawallet/sdk@0.1.38":
+  version "0.1.38"
+  resolved "https://registry.yarnpkg.com/@lawallet/sdk/-/sdk-0.1.38.tgz#d1553af10701f69400fec63f5cf48af2cc9d49f8"
+  integrity sha512-vuAp4469v/6H8KKtYpn9UhgdRDeBxM1EPaIVYP98Ed26FTEEhEbd7tSMGsAwTOFAzwm3i9xPDYQB8/liJxpQXQ==
   dependencies:
     "@nostr-dev-kit/ndk" "2.10.0"
     nostr-tools "npm:@lawallet/nostr-tools@2.7.2"

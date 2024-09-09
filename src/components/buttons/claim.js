@@ -199,11 +199,11 @@ const invoke = async (interaction) => {
         "El faucet que intentas reclamar fue cerrado por su autor"
       );
 
-    // if (faucet.discord_id === userId)
-    //   return FollowUpEphemeralResponse(
-    //     interaction,
-    //     "No puedes reclamar tu propio faucet"
-    //   );
+    if (faucet.discord_id === userId)
+      return FollowUpEphemeralResponse(
+        interaction,
+        "No puedes reclamar tu propio faucet"
+      );
 
     claimQueue.push({ faucet, interaction });
 
