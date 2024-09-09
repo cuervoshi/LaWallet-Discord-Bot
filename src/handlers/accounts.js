@@ -1,10 +1,14 @@
 import { NDKPrivateKeySigner } from "@nostr-dev-kit/ndk";
 import AccountModel from "../schemas/AccountSchema.js";
-import { Wallet } from "@lawallet/sdk";
+import { createFederationConfig, Wallet } from "@lawallet/sdk";
 import { decryptData, encryptData } from "../utils/crypto.js";
 import { connectedNdk } from "../../Bot.js";
 
 const SALT = process.env.SALT ?? "";
+
+const federationConfig = createFederationConfig({
+  endpoints: { lightningDomain: "https://fixedsats.com" },
+});
 
 const createAccount = async (discord_id, discord_username) => {
   try {
@@ -18,7 +22,10 @@ const createAccount = async (discord_id, discord_username) => {
 
     await newAccount.save();
 
-    return new Wallet({ signer, ndk: connectedNdk });
+    const wallet = new Wallet({ signer, ndk: connectedNdk, federationConfig });
+    await wallet.registerHandle(discord_username);
+
+    return wallet;
   } catch (err) {
     console.log(err);
     return null;
@@ -32,6 +39,7 @@ const getOrCreateAccount = async (discord_id, discord_username) => {
       return new Wallet({
         signer: new NDKPrivateKeySigner(decryptData(userAccount.sk, SALT)),
         ndk: connectedNdk,
+        federationConfig,
       });
 
     const createdAccount = createAccount(discord_id, discord_username);

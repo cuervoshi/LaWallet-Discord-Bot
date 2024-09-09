@@ -26,16 +26,9 @@ const invoke = async (interaction) => {
     const userWallet = await getOrCreateAccount(user.id, user.username);
     const sats = await userWallet.getBalance("BTC");
 
-    // const row = new ActionRowBuilder().addComponents([
-    //   new ButtonBuilder()
-    //     .setEmoji({ name: `💰` })
-    //     .setStyle(5)
-    //     .setLabel("Ir a mi billetera")
-    //     .setURL(`${walletUrl}`),
-    // ]);
+    await userWallet.fetch();
 
-    const yourPubkeyText =
-      "La clave pública de tu cuenta en Nostr es `" + userWallet.pubkey + "`";
+    const yourPubkeyText = "Tu Walias es: \n`" + userWallet.walias + "`";
 
     handleBotResponse(interaction, {
       content: `Balance: **${formatter(0, 0).format(
