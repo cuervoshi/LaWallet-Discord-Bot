@@ -28,12 +28,14 @@ const invoke = async (interaction) => {
 
     await userWallet.fetch();
 
-    const yourPubkeyText = "Tu Walias es: \n`" + userWallet.walias + "`";
+    const yourWaliasText = !userWallet.walias
+      ? ""
+      : "Tu Walias es: \n`" + userWallet.walias + "`";
 
     handleBotResponse(interaction, {
-      content: `Balance: **${formatter(0, 0).format(
-        sats / 1000
-      )} satoshis** \n\n${yourPubkeyText}`,
+      content: `Balance: **${formatter(0, 0).format(sats / 1000)} satoshis** ${
+        yourWaliasText ? `\n\n${yourWaliasText}` : ""
+      }`,
       ephemeral: true,
     });
   } catch (err) {
