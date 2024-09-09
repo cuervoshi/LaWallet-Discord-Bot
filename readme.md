@@ -2,7 +2,7 @@
 
 Rename .env.example to .env and replace your enviroment vars:
 
-```
+```env
 CLIENT_TOKEN=YOUR_BOT_TOKEN_ID
 MONGODB_URI=MONGODB_URI=mongodb+srv://<username>:<password>@<url>/<dbname>
 POOL_ADDRESS=pozo@lacrypta.ar
@@ -11,7 +11,7 @@ SALT=123456789 // for sk encrypt
 
 # Available commands
 
-```
+```bash
 /balance: Devuelve el saldo de tu billetera.
 /donar monto: <integer>: Realiza donaciones al pozo de la crypta.
 /pagar bolt11: <string>: Paga una factura de lightning network
