@@ -37,7 +37,7 @@ const invoke = async (interaction) => {
         { name: `\u200B`, value: `\u200B` },
         {
           name: "ATENCIÓN",
-          value: "Este mensaje se eliminará automáticamente en 10 segundos",
+          value: "Este mensaje se eliminará automáticamente en 15 segundos",
         }
       );
 
@@ -48,7 +48,7 @@ const invoke = async (interaction) => {
 
     setTimeout(() => {
       interaction.deleteReply();
-    }, 10000);
+    }, 15000);
   } catch (err) {
     console.log(err);
     EphemeralMessageResponse(interaction, "Ocurrió un error");
