@@ -5,13 +5,12 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 import { getOrCreateAccount } from "../handlers/accounts.js";
+import { createFaucet, updateFaucetMessage } from "../handlers/faucet.js";
 import {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
   validateAmountAndBalance,
 } from "../utils/helperFunctions.js";
-import { createFaucet, updateFaucetMessage } from "../handlers/faucet.js";
-import { AuthorConfig } from "../utils/helperConfig.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {
@@ -63,7 +62,7 @@ const invoke = async (interaction) => {
         `Ocurrió un error en la división cantidad de sats / usuarios`
       );
 
-    const wallet = await getOrCreateAccount(user.id);
+    const wallet = await getOrCreateAccount(user.id, user.username);
     const accountBalance = await wallet.getBalance("BTC");
     const satsBalance = accountBalance / 1000;
 
@@ -97,7 +96,10 @@ const invoke = async (interaction) => {
       paymentRequest: zapToAccountFaucet.pr,
       onSuccess: async () => {
         const embed = new EmbedBuilder()
-          .setAuthor(AuthorConfig)
+          .setAuthor({
+            name: `${interaction.user.globalName}`,
+            iconURL: `https://cdn.discordapp.com/avatars/${interaction.user.id}/${interaction.user.avatar}`,
+          })
           .addFields([
             {
               name: `Faucet disponible:`,
