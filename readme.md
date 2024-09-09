@@ -28,3 +28,9 @@ SALT=123456789 // for sk encrypt
 ```
 yarn install & yarn start
 ```
+
+# Run docker
+
+```
+docker buildx build -t lawallet-bot . & docker run -d --name bot-container lawallet-bot
+```
