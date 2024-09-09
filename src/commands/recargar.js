@@ -41,8 +41,9 @@ const invoke = async (interaction) => {
 
     const invoiceDetails = await wallet.generateInvoice({
       milisatoshis: amount * 1000,
-      comment: `Recargar ${amount} sats a la billetera de discord del usuario ${interaction.user.username}`,
     });
+
+    //"`Recargar ${amount} sats a la billetera de discord del usuario ${interaction.user.username}`",
 
     const qrData = await QRCode.toDataURL(invoiceDetails.pr);
     const buffer = new Buffer.from(qrData.split(`,`)[1], `base64`);

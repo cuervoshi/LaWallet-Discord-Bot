@@ -90,7 +90,7 @@ const invoke = async (interaction) => {
 
     const invoiceDetails = await receiverWallet.generateInvoice({
       milisatoshis: msatsAmount,
-      comment: "",
+      comment: message,
     });
 
     const onSuccess = async () => {

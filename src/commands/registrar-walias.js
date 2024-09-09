@@ -49,7 +49,7 @@ const invoke = async (interaction) => {
           "Nombre de usuario inválido. Use únicamente carácteres a-z y 0-9",
       });
 
-    const wallet = await getOrCreateAccount(user.id);
+    const wallet = await getOrCreateAccount(user.id, interaction.user.username);
     await wallet.fetch();
 
     const signupInfo = await wallet.federation.signUpInfo();
@@ -84,16 +84,21 @@ const invoke = async (interaction) => {
       .setAuthor(AuthorConfig)
       .addFields([
         {
-          name: `Comprar ${username}@${normalizeLNDomain(LNDOMAIN)}`,
+          name: `Registrar ${username}@${normalizeLNDomain(LNDOMAIN)}`,
           value: signupInfo.milisatoshis
             ? `Deberás abonar ${
                 signupInfo.milisatoshis / 1000
-              } sats para obtener este dominio.\n¿Estás seguro de que quieres comprarlo?`
+              } sats para obtener este walias.`
             : "El registro es gratuito, simplemente presiona registrar para completar la operación",
+        },
+        {
+          name: "**Atención**",
+          value:
+            "Este registro es único, por lo que no podrás volver a registrar un nuevo walias en el futuro.\n\n¿Estás seguro de que quieres comprarlo?",
         },
       ])
       .setFooter({
-        text: `Username: ${username}`,
+        text: `Identificador: ${username}`,
       });
 
     const row = new ActionRowBuilder().addComponents([
