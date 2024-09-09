@@ -59,7 +59,9 @@ const invoke = async (interaction) => {
     const existWalias = wallet.walias;
     if (existWalias && existWalias.length)
       return interaction.editReply({
-        content: `Ya tienes un walias asociado a tu cuenta: ${existWalias}`,
+        content: `Ya tienes un walias asociado a tu cuenta: ${
+          "`" + existWalias + "`"
+        }`,
       });
 
     const existIdentity = await wallet.federation.existIdentity(username);

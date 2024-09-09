@@ -20,13 +20,13 @@ const create = () => {
         .setName("monto")
         .setDescription("La cantidad de satoshis a transferir")
         .setRequired(true)
-    )
-    .addStringOption((opt) =>
-      opt
-        .setName("message")
-        .setDescription("Un mensaje de la transferencia")
-        .setRequired(false)
     );
+  // .addStringOption((opt) =>
+  //   opt
+  //     .setName("message")
+  //     .setDescription("Un mensaje de la transferencia")
+  //     .setRequired(false)
+  // );
 
   return command.toJSON();
 };
@@ -73,7 +73,6 @@ const invoke = async (interaction) => {
       );
 
     const senderBalance = await senderWallet.getBalance("BTC");
-    console.log(senderBalance);
     const isValidAmount = validateAmountAndBalance(
       amount,
       senderBalance / 1000
@@ -82,15 +81,14 @@ const invoke = async (interaction) => {
     if (!isValidAmount.status)
       return FollowUpEphemeralResponse(interaction, isValidAmount.content);
 
-    const message = interaction.options.get(`message`)
-      ? interaction.options.get(`message`)
-      : {
-          value: `${user.username} te envío ${amount} sats a través de discord`,
-        };
+    // const message = interaction.options.get(`message`)
+    //   ? interaction.options.get(`message`)
+    //   : {
+    //       value: `${user.username} te envío ${amount} sats a través de discord`,
+    //     };
 
     const invoiceDetails = await receiverWallet.generateInvoice({
       milisatoshis: msatsAmount,
-      comment: message,
     });
 
     const onSuccess = async () => {

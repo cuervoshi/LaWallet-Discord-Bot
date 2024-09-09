@@ -32,7 +32,7 @@ const invoke = async (interaction) => {
     if (walias && walias.length)
       return EphemeralMessageResponse(
         interaction,
-        `Ya tienes un walias registrado: ${wallet.walias}`
+        `Ya tienes un walias registrado: ${"`" + wallet.walias + "`"}`
       );
 
     const registered = await wallet.registerHandle(username);
