@@ -50,7 +50,7 @@ const invoke = async (interaction) => {
       });
 
     const wallet = await getOrCreateAccount(user.id, interaction.user.username);
-    await wallet.fetch();
+    if (!wallet.lnurlpData) await wallet.fetch();
 
     const signupInfo = await wallet.federation.signUpInfo();
     if (!signupInfo || !signupInfo.enabled)

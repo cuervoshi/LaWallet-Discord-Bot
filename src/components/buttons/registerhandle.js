@@ -26,7 +26,7 @@ const invoke = async (interaction) => {
 
     const userId = interaction.user.id;
     const wallet = await getOrCreateAccount(userId, interaction.user.username);
-    await wallet.fetch();
+    if (!wallet.lnurlpData) await wallet.fetch();
 
     let walias = wallet.walias;
     if (walias && walias.length)

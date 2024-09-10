@@ -3,6 +3,9 @@ import AccountModel from "../schemas/AccountSchema.js";
 import { createFederationConfig, Wallet } from "@lawallet/sdk";
 import { decryptData, encryptData } from "../utils/crypto.js";
 import { connectedNdk } from "../../Bot.js";
+import SimpleCache from "./SimpleCache.js";
+
+const accountsCache = new SimpleCache();
 
 const SALT = process.env.SALT ?? "";
 const LW_DEFAULT_DOMAIN = "https://lawallet.ar";
@@ -35,15 +38,27 @@ const createAccount = async (discord_id, discord_username) => {
 
 const getOrCreateAccount = async (discord_id, discord_username) => {
   try {
+    const cachedAccount = accountsCache.get(`account:${discord_id}`);
+    if (cachedAccount) {
+      console.log("return from cache");
+      return cachedAccount;
+    }
+
     const userAccount = await AccountModel.findOne({ discord_id });
-    if (userAccount)
-      return new Wallet({
+    if (userAccount) {
+      const accountWallet = new Wallet({
         signer: new NDKPrivateKeySigner(decryptData(userAccount.sk, SALT)),
         ndk: connectedNdk,
         federationConfig,
       });
 
+      accountsCache.set(`account:${discord_id}`, accountWallet, 360000);
+      return accountWallet;
+    }
+
     const createdAccount = createAccount(discord_id, discord_username);
+    accountsCache.set(`account:${discord_id}`, createdAccount, 360000);
+
     return createdAccount;
   } catch (err) {
     console.log(err);
