@@ -4,10 +4,30 @@ Rename .env.example to .env and replace your enviroment vars:
 
 ```env
 CLIENT_TOKEN=YOUR_BOT_TOKEN_ID
-MONGODB_URI=MONGODB_URI=mongodb+srv://<username>:<password>@<url>/<dbname>
 POOL_ADDRESS=pozo@lacrypta.ar
 LIGHTNING_DOMAIN=https://lawallet.ar
+
+MONGO_HOST=mongo
+MONGO_PORT=27017
+MONGO_DB=lnbot
+
 SALT=123456789 // for sk encrypt
+```
+
+# Start bot
+
+```
+yarn install
+```
+
+```
+yarn start
+```
+
+# Run docker
+
+```
+docker-compose up --build
 ```
 
 # Available commands
@@ -23,17 +43,4 @@ SALT=123456789 // for sk encrypt
 /top tipo: <"pozo" | "comunidad"> : Devuelve el ranking TOP 10 usuarios que enviaron sats
 /zap user: <user> monto: <integer> message: <string>: Regala sats a un usuario en discord
 /registrar-walias nombre: <string>: Registra un lud16/nip05 nombre@lnbot.io (o el lightning domain correspondiente)
-```
-
-# Start bot
-
-```
-yarn install & yarn start
-```
-
-# Run docker
-
-```
-docker buildx build -t lawallet-bot .
-docker run -d --name bot-container lawallet-bot
 ```

@@ -4,11 +4,10 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from "discord.js";
-import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
-import { closeFaucet, getAllOpenFaucets } from "../handlers/faucet.js";
 import { getOrCreateAccount } from "../handlers/accounts.js";
-import dedent from "dedent-js";
+import { closeFaucet, getAllOpenFaucets } from "../handlers/faucet.js";
 import { AuthorConfig } from "../utils/helperConfig.js";
+import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {

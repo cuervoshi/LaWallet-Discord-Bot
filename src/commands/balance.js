@@ -8,10 +8,8 @@ import { getOrCreateAccount } from "../handlers/accounts.js";
 import { formatter } from "../utils/helperFormatter.js";
 import {
   EphemeralMessageResponse,
-  handleBotResponse,
   publishProfile,
 } from "../utils/helperFunctions.js";
-import { NDKRelaySet } from "@nostr-dev-kit/ndk";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {

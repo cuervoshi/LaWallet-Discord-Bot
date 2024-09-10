@@ -1,9 +1,9 @@
-import { connect } from "mongoose";
-import { log } from "./src/handlers/log.js";
+import NDK from "@nostr-dev-kit/ndk";
+import { Client, GatewayIntentBits } from "discord.js";
 import {} from "dotenv/config";
 import fs from "fs";
-import { Client, GatewayIntentBits } from "discord.js";
-import NDK from "@nostr-dev-kit/ndk";
+import { connect } from "mongoose";
+import { log } from "./src/handlers/log.js";
 
 import WebSocket from "ws";
 Object.assign(global, { WebSocket });
@@ -13,6 +13,10 @@ export const connectedNdk = new NDK({
   autoConnectUserRelays: false,
   autoFetchUserMutelist: false,
 });
+
+const mongoHost = process.env.MONGO_HOST || "mongo";
+const mongoPort = process.env.MONGO_PORT || 27017;
+const mongoDB = process.env.MONGO_DB || "lnbot";
 
 let knownRelays = [];
 
@@ -72,11 +76,15 @@ async function runBot() {
 
   log("Started connecting to MongoDB...", "warn");
 
-  await connect(process.env.MONGODB_URI || config.handler.mongodb.uri).then(
-    () => {
-      log("MongoDB is connected to the atlas!", "done");
-    }
-  );
+  const mongoURI = `mongodb://${mongoHost}:${mongoPort}/${mongoDB}`;
+
+  connect(mongoURI)
+    .then(() => {
+      log("MongoDB is connected!", "done");
+    })
+    .catch((err) => {
+      log("Error conectándose a MongoDB: ", err, "err");
+    });
 }
 
 runBot();

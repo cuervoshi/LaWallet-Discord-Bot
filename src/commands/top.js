@@ -1,9 +1,8 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import { getOrCreateAccount } from "../handlers/accounts.js";
-import { formatter } from "../utils/helperFormatter.js";
-import { AuthorConfig } from "../utils/helperConfig.js";
-import { getSumOfDonationAmounts, getTopRanking } from "../handlers/donate.js";
 import dedent from "dedent-js";
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { getSumOfDonationAmounts, getTopRanking } from "../handlers/donate.js";
+import { AuthorConfig } from "../utils/helperConfig.js";
+import { formatter } from "../utils/helperFormatter.js";
 
 const availableTypes = ["pozo", "comunidad"];
 

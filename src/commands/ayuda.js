@@ -1,8 +1,8 @@
+import { commandsArray } from "#events/ready.js";
+import dedent from "dedent-js";
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { AuthorConfig } from "../utils/helperConfig.js";
 import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
-import dedent from "dedent-js";
-import { commandsArray } from "#events/ready.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {

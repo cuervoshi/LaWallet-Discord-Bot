@@ -110,6 +110,6 @@ export {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
   handleBotResponse,
-  validateAmountAndBalance,
   publishProfile,
+  validateAmountAndBalance,
 };

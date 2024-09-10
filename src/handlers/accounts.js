@@ -26,9 +26,6 @@ const createAccount = async (discord_id, discord_username) => {
 
     const wallet = new Wallet({ signer, ndk: connectedNdk, federationConfig });
 
-    // if (federationConfig.lightningDomain !== LW_DEFAULT_DOMAIN)
-    //   await wallet.registerHandle(discord_username);
-
     return wallet;
   } catch (err) {
     console.log(err);
