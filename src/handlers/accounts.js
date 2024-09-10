@@ -28,6 +28,7 @@ const createAccount = async (discord_id, discord_username) => {
     await newAccount.save();
 
     const wallet = new Wallet({ signer, ndk: connectedNdk, federationConfig });
+    await wallet.fetch();
 
     return wallet;
   } catch (err) {
@@ -39,10 +40,7 @@ const createAccount = async (discord_id, discord_username) => {
 const getOrCreateAccount = async (discord_id, discord_username) => {
   try {
     const cachedAccount = accountsCache.get(`account:${discord_id}`);
-    if (cachedAccount) {
-      console.log("return from cache");
-      return cachedAccount;
-    }
+    if (cachedAccount) return cachedAccount;
 
     const userAccount = await AccountModel.findOne({ discord_id });
     if (userAccount) {
@@ -52,6 +50,7 @@ const getOrCreateAccount = async (discord_id, discord_username) => {
         federationConfig,
       });
 
+      await accountWallet.fetch();
       accountsCache.set(`account:${discord_id}`, accountWallet, 360000);
       return accountWallet;
     }

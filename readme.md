@@ -7,7 +7,7 @@ CLIENT_TOKEN=YOUR_BOT_TOKEN_ID
 POOL_ADDRESS=pozo@lacrypta.ar
 LIGHTNING_DOMAIN=https://lawallet.ar
 
-MONGO_HOST=mongo
+MONGO_HOST=localhost
 MONGO_PORT=27017
 MONGO_DB=lnbot
 

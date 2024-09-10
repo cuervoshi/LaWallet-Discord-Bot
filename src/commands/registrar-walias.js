@@ -52,10 +52,6 @@ const invoke = async (interaction) => {
     const wallet = await getOrCreateAccount(user.id, interaction.user.username);
     if (!wallet.lnurlpData) await wallet.fetch();
 
-    const signupInfo = await wallet.federation.signUpInfo();
-    if (!signupInfo || !signupInfo.enabled)
-      return interaction.editReply({ content: "Registro deshabilitado" });
-
     const existWalias = wallet.walias;
     if (existWalias && existWalias.length)
       return interaction.editReply({
@@ -63,6 +59,10 @@ const invoke = async (interaction) => {
           "`" + existWalias + "`"
         }`,
       });
+
+    const signupInfo = await wallet.federation.signUpInfo();
+    if (!signupInfo || !signupInfo.enabled)
+      return interaction.editReply({ content: "Registro deshabilitado" });
 
     const existIdentity = await wallet.federation.existIdentity(username);
     if (existIdentity)
