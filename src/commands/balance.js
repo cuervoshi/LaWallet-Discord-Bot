@@ -33,8 +33,8 @@ const invoke = async (interaction) => {
     const userWallet = await getOrCreateAccount(user.id, user.username);
     const sats = await userWallet.getBalance("BTC");
 
-    const { profile } = await userWallet.fetch();
-    if (!profile) await publishProfile(userWallet, user);
+    const { nostr } = await userWallet.fetch();
+    if (!nostr) await publishProfile(userWallet, user);
 
     const yourWaliasText = !userWallet.walias
       ? "No tienes un walias asociado a tu cuenta \nRegistrá el tuyo con el comando `/registrar-walias <nombre>`"
