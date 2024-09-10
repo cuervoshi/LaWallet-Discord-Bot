@@ -27,7 +27,12 @@ const createAccount = async (discord_id, discord_username) => {
 
     await newAccount.save();
 
-    const wallet = new Wallet({ signer, ndk: connectedNdk, federationConfig });
+    const wallet = new Wallet({
+      signer,
+      ndk: connectedNdk,
+      federationConfig,
+      fetchParams: { enabled: false },
+    });
     await wallet.fetch();
 
     return wallet;
@@ -48,6 +53,7 @@ const getOrCreateAccount = async (discord_id, discord_username) => {
         signer: new NDKPrivateKeySigner(decryptData(userAccount.sk, SALT)),
         ndk: connectedNdk,
         federationConfig,
+        fetchParams: { enabled: false },
       });
 
       await accountWallet.fetch();
