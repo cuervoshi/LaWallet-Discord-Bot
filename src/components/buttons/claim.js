@@ -13,6 +13,7 @@ import {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
 } from "../../utils/helperFunctions.js";
+import { log } from "../../handlers/log.js";
 
 const customId = "claim";
 
@@ -211,6 +212,10 @@ const invoke = async (interaction) => {
       processQueue();
     }
   } catch (err) {
+    log(
+      `Error cuando @${interaction.username} intentó reclamar un faucet - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
     EphemeralMessageResponse(
       interaction,
       "Ocurrió un error al reclamar la factura"

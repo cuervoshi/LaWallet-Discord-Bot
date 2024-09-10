@@ -6,6 +6,7 @@ import {
 import { getOrCreateAccount } from "../handlers/accounts.js";
 import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
 import QRCode from "qrcode";
+import { log } from "../handlers/log.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {
@@ -67,7 +68,10 @@ const invoke = async (interaction) => {
       ephemeral: true,
     });
   } catch (err) {
-    console.log(err);
+    log(
+      `Error en el comando /recargar ejecutado por @${interaction.username} - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
     EphemeralMessageResponse(interaction, "Ocurrió un error");
   }
 };

@@ -10,6 +10,7 @@ import {
   EphemeralMessageResponse,
   publishProfile,
 } from "../utils/helperFunctions.js";
+import { log } from "../handlers/log.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {
@@ -72,7 +73,11 @@ const invoke = async (interaction) => {
       components: [row],
     });
   } catch (err) {
-    console.log(err);
+    log(
+      `Error en el comando /balance ejecutado por @${interaction.username} - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
+
     EphemeralMessageResponse(interaction, "Ocurrió un error");
   }
 };

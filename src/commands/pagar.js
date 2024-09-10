@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "discord.js";
 import { getOrCreateAccount } from "../handlers/accounts.js";
 import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
+import { log } from "../handlers/log.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {
@@ -41,7 +42,11 @@ const invoke = async (interaction) => {
         EphemeralMessageResponse(interaction, "Ocurrió un error");
       },
     });
-  } catch {
+  } catch (err) {
+    log(
+      `Error en el comando /pagar ejecutado por @${interaction.username} - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
     EphemeralMessageResponse(interaction, "Ocurrió un error");
   }
 };

@@ -8,6 +8,7 @@ import { getOrCreateAccount } from "../handlers/accounts.js";
 import { closeFaucet, getAllOpenFaucets } from "../handlers/faucet.js";
 import { AuthorConfig } from "../utils/helperConfig.js";
 import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
+import { log } from "../handlers/log.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {
@@ -144,7 +145,10 @@ const invoke = async (interaction) => {
       interaction.editReply({ embeds: [embed], ephemeral: true });
     }
   } catch (err) {
-    console.log(err);
+    log(
+      `Error en el comando /cerrar-faucets ejecutado por @${interaction.username} - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
     EphemeralMessageResponse(interaction, "Ocurrió un error");
   }
 };

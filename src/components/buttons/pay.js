@@ -1,5 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { getOrCreateAccount } from "../../handlers/accounts.js";
+import { log } from "../../handlers/log.js";
 
 const customId = "pay";
 
@@ -55,7 +56,10 @@ const invoke = async (interaction) => {
       }
     }
   } catch (err) {
-    console.log(err);
+    log(
+      `Error cuando @${interaction.username} intentó pagar una factura de /solicitar - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
     return FollowUpEphemeralResponse(interaction, "Ocurrió un error");
   }
 };

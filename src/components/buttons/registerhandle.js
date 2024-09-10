@@ -1,4 +1,5 @@
 import { getOrCreateAccount, LNDOMAIN } from "../../handlers/accounts.js";
+import { log } from "../../handlers/log.js";
 import { SimpleLock } from "../../handlers/SimpleLock.js";
 import {
   EphemeralMessageResponse,
@@ -78,7 +79,10 @@ const invoke = async (interaction) => {
       processQueue();
     }
   } catch (err) {
-    console.log(err);
+    log(
+      `Error cuando @${interaction.username} intentó registrar un walias - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
     EphemeralMessageResponse(
       interaction,
       "Ocurrió un error al registrar el walias"

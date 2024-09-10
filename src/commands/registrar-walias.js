@@ -10,6 +10,7 @@ import {
   normalizeLNDomain,
 } from "../utils/helperFunctions.js";
 import { AuthorConfig } from "../utils/helperConfig.js";
+import { log } from "../handlers/log.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {
@@ -116,7 +117,10 @@ const invoke = async (interaction) => {
       components: [row],
     });
   } catch (err) {
-    console.log(err);
+    log(
+      `Error en el comando /registrar-walias ejecutado por @${interaction.username} - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
     EphemeralMessageResponse(interaction, "Ocurrió un error");
   }
 };

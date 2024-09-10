@@ -3,6 +3,7 @@ import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { getSumOfDonationAmounts, getTopRanking } from "../handlers/donate.js";
 import { AuthorConfig } from "../utils/helperConfig.js";
 import { formatter } from "../utils/helperFormatter.js";
+import { log } from "../handlers/log.js";
 
 const availableTypes = ["pozo", "comunidad"];
 
@@ -101,7 +102,11 @@ const invoke = async (interaction) => {
       });
     }
   } catch (err) {
-    console.log(err);
+    log(
+      `Error en el comando /top ejecutado por @${interaction.username} - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
+
     interaction.editReply({
       content: `Ocurrió un error al obtener el ranking`,
     });
