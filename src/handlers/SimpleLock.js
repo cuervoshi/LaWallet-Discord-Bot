@@ -11,10 +11,9 @@ export class SimpleLock {
       const timeout = setTimeout(() => {
         if (!released) {
           released = true;
-          reject(new Error("Lock acquisition timed out"));
           this.release();
         }
-      }, 10000);
+      }, 5000);
 
       const release = () => {
         if (!released) {

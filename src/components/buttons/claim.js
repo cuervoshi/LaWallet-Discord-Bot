@@ -3,17 +3,17 @@ import { ActionRowBuilder, ButtonBuilder, EmbedBuilder } from "discord.js";
 import { getOrCreateAccount } from "../../handlers/accounts.js";
 import { updateUserRank } from "../../handlers/donate.js";
 import {
-  getFaucet,
   addClaimerOnFaucet,
   closeFaucet,
+  getFaucet,
 } from "../../handlers/faucet.js";
+import { log } from "../../handlers/log.js";
 import { SimpleLock } from "../../handlers/SimpleLock.js";
 import { AuthorConfig } from "../../utils/helperConfig.js";
 import {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
 } from "../../utils/helperFunctions.js";
-import { log } from "../../handlers/log.js";
 
 const customId = "claim";
 
@@ -198,11 +198,11 @@ const invoke = async (interaction) => {
         "El faucet que intentas reclamar no se encuentra en la base de datos"
       );
 
-    // if (faucet.claimersIds.includes(userId))
-    //   return FollowUpEphemeralResponse(
-    //     interaction,
-    //     "Solo puedes reclamar el premio una vez"
-    //   );
+    if (faucet.claimersIds.includes(userId))
+      return FollowUpEphemeralResponse(
+        interaction,
+        "Solo puedes reclamar el premio una vez"
+      );
 
     if (faucet.closed)
       return FollowUpEphemeralResponse(
@@ -210,11 +210,11 @@ const invoke = async (interaction) => {
         "El faucet que intentas reclamar fue cerrado por su autor"
       );
 
-    // if (faucet.owner_id === userId)
-    //   return FollowUpEphemeralResponse(
-    //     interaction,
-    //     "No puedes reclamar tu propio faucet"
-    //   );
+    if (faucet.owner_id === userId)
+      return FollowUpEphemeralResponse(
+        interaction,
+        "No puedes reclamar tu propio faucet"
+      );
 
     claimQueue.push({ faucet, interaction });
 
