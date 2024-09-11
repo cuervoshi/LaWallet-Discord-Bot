@@ -6,11 +6,33 @@ export class SimpleLock {
 
   acquire() {
     return new Promise((resolve) => {
+      let released = false;
+
+      const timeout = setTimeout(() => {
+        if (!released) {
+          released = true;
+          reject(new Error("Lock acquisition timed out"));
+          this.release();
+        }
+      }, 10000);
+
+      const release = () => {
+        if (!released) {
+          clearTimeout(timeout);
+          released = true;
+          this.release();
+        }
+      };
+
       if (!this.locked) {
         this.locked = true;
-        resolve(() => this.release());
+        resolve(release);
       } else {
-        this.queue.push(resolve);
+        this.queue.push(() => {
+          clearTimeout(timeout);
+          released = true;
+          resolve(release);
+        });
       }
     });
   }

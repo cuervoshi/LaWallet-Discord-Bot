@@ -80,7 +80,12 @@ const claimFaucet = async (faucet, interaction) => {
           ).toFixed(0)} satoshis`
         );
       },
-      onError: () => {
+      onError: (err) => {
+        log(
+          `Error cuando @${interaction.username} intentó reclamar un faucet (faucet ${faucetId}) - Mensaje: ${err}`,
+          "err"
+        );
+
         EphemeralMessageResponse(
           interaction,
           "Ocurrió un error al reclamar la factura"
@@ -88,6 +93,11 @@ const claimFaucet = async (faucet, interaction) => {
       },
     });
   } catch (err) {
+    log(
+      `Error cuando @${interaction.username} intentó reclamar un faucet - Código de error ${err.code} Mensaje: ${err.message}`,
+      "err"
+    );
+
     EphemeralMessageResponse(
       interaction,
       "Ocurrió un error al reclamar la factura"
@@ -188,11 +198,11 @@ const invoke = async (interaction) => {
         "El faucet que intentas reclamar no se encuentra en la base de datos"
       );
 
-    if (faucet.claimersIds.includes(userId))
-      return FollowUpEphemeralResponse(
-        interaction,
-        "Solo puedes reclamar el premio una vez"
-      );
+    // if (faucet.claimersIds.includes(userId))
+    //   return FollowUpEphemeralResponse(
+    //     interaction,
+    //     "Solo puedes reclamar el premio una vez"
+    //   );
 
     if (faucet.closed)
       return FollowUpEphemeralResponse(
@@ -200,11 +210,11 @@ const invoke = async (interaction) => {
         "El faucet que intentas reclamar fue cerrado por su autor"
       );
 
-    if (faucet.owner_id === userId)
-      return FollowUpEphemeralResponse(
-        interaction,
-        "No puedes reclamar tu propio faucet"
-      );
+    // if (faucet.owner_id === userId)
+    //   return FollowUpEphemeralResponse(
+    //     interaction,
+    //     "No puedes reclamar tu propio faucet"
+    //   );
 
     claimQueue.push({ faucet, interaction });
 
