@@ -3,7 +3,9 @@ import { log } from "../../handlers/log.js";
 import { SimpleLock } from "../../handlers/SimpleLock.js";
 import {
   EphemeralMessageResponse,
+  existIdentity,
   normalizeLNDomain,
+  signupCache,
   validateRelaysStatus,
 } from "../../utils/helperFunctions.js";
 
@@ -28,12 +30,22 @@ async function handleClaimHandle(wallet, username, interaction) {
   );
 
   try {
+    const nameWasTaken = await existIdentity(wallet.federation, username);
+    if (nameWasTaken)
+      return interaction.editReply({
+        content:
+          "El nombre de usuario que elegiste ya existe en la base de datos.",
+      });
+
     const registered = await wallet.registerHandle(username);
     if (registered) {
       log(
         `@${interaction.user.username} registró el walias ${username}`,
         "info"
       );
+
+      let ttl = 86400 * 1000;
+      signupCache.set(`signup:${federation.id}:${username}`, true, ttl);
 
       EphemeralMessageResponse(
         interaction,
@@ -88,12 +100,12 @@ const invoke = async (interaction) => {
     const wallet = await getOrCreateAccount(userId, interaction.user.username);
     if (!wallet.lnurlpData) await wallet.fetch();
 
-    let walias = wallet.walias;
-    if (walias && walias.length)
-      return EphemeralMessageResponse(
-        interaction,
-        `Ya tienes un walias registrado: ${"`" + wallet.walias + "`"}`
-      );
+    // let walias = wallet.walias;
+    // if (walias && walias.length)
+    //   return EphemeralMessageResponse(
+    //     interaction,
+    //     `Ya tienes un walias registrado: ${"`" + wallet.walias + "`"}`
+    //   );
 
     claimQueue.push({ wallet, username, interaction });
 

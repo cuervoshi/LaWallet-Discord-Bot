@@ -3,7 +3,7 @@ import { connectedNdk, knownRelays } from "../../Bot.js";
 import { log } from "../handlers/log.js";
 import SimpleCache from "../handlers/SimpleCache.js";
 
-const signupCache = new SimpleCache();
+export const signupCache = new SimpleCache();
 
 const validateAmountAndBalance = (amount, balance) => {
   if (amount <= 0)
@@ -148,17 +148,20 @@ async function getSignupInfo(federation) {
 
 async function existIdentity(federation, username) {
   const infoFromCache = signupCache.get(`signup:${federation.id}:${username}`);
-  if (infoFromCache) return infoFromCache;
 
-  const existIdentity = await federation.existIdentity(username);
+  if (infoFromCache) {
+    return infoFromCache;
+  } else {
+    const existIdentity = await federation.existIdentity(username);
 
-  if (existIdentity) {
-    let ttl = 86400 * 1000; // 24 hours
-    signupCache.set(`signup:${federation.id}:${username}`, true, ttl);
-    return true;
+    if (existIdentity) {
+      let ttl = 86400 * 1000; // 24 hours
+      signupCache.set(`signup:${federation.id}:${username}`, true, ttl);
+      return true;
+    }
+
+    return false;
   }
-
-  return false;
 }
 
 export {
