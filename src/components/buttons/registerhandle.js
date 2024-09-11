@@ -23,7 +23,7 @@ async function handleClaimHandle(wallet, username, interaction) {
   const release = await lock.acquire();
 
   log(
-    `Lock de reclamar faucet adquirido para ${interaction.user.username}`,
+    `Lock de registrar handle adquirido para ${interaction.user.username}`,
     "info"
   );
 
@@ -56,7 +56,7 @@ async function handleClaimHandle(wallet, username, interaction) {
     }
   } finally {
     log(
-      `Lock de reclamar faucet de ${interaction.user.username} liberado`,
+      `Lock de registrar handle de ${interaction.user.username} liberado`,
       "info"
     );
 

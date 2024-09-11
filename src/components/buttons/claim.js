@@ -31,9 +31,19 @@ async function processQueue() {
 async function handleClaim(faucet, interaction) {
   const release = await lock.acquire();
 
+  log(
+    `Lock de reclamar factura adquirido para ${interaction.user.username}`,
+    "info"
+  );
+
   try {
     await claimFaucet(faucet, interaction);
   } finally {
+    log(
+      `Lock de reclamar factura de ${interaction.user.username} liberado`,
+      "info"
+    );
+
     release();
   }
 }

@@ -71,7 +71,7 @@ const invoke = async (interaction) => {
     if (!signupInfo || !signupInfo.enabled)
       return interaction.editReply({ content: "Registro deshabilitado" });
 
-    const nameWasTaken = await existIdentity(federation, username);
+    const nameWasTaken = await existIdentity(wallet.federation, username);
     if (nameWasTaken)
       return interaction.editReply({
         content:
