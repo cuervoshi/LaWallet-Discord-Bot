@@ -100,12 +100,12 @@ const invoke = async (interaction) => {
     const wallet = await getOrCreateAccount(userId, interaction.user.username);
     if (!wallet.lnurlpData) await wallet.fetch();
 
-    // let walias = wallet.walias;
-    // if (walias && walias.length)
-    //   return EphemeralMessageResponse(
-    //     interaction,
-    //     `Ya tienes un walias registrado: ${"`" + wallet.walias + "`"}`
-    //   );
+    let walias = wallet.walias;
+    if (walias && walias.length)
+      return EphemeralMessageResponse(
+        interaction,
+        `Ya tienes un walias registrado: ${"`" + wallet.walias + "`"}`
+      );
 
     claimQueue.push({ wallet, username, interaction });
 
