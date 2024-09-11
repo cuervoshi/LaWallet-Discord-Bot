@@ -3,6 +3,7 @@ import { getOrCreateAccount } from "../handlers/accounts.js";
 import {
   EphemeralMessageResponse,
   validateAmountAndBalance,
+  validateRelaysStatus,
 } from "../utils/helperFunctions.js";
 import lnurl from "lnurl-pay";
 import { log } from "../handlers/log.js";
@@ -35,9 +36,12 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
 
     const address = interaction.options.get(`address`).value;
     const amount = parseInt(interaction.options.get(`monto`).value);
+
+    log(`@${user.username} ejecutó /retirar ${address} ${amount}`, "info");
 
     const wallet = await getOrCreateAccount(user.id, user.username);
     const balance = await wallet.getBalance("BTC");
@@ -54,15 +58,30 @@ const invoke = async (interaction) => {
     });
 
     if (invoice && invoice.invoice) {
+      log(
+        `@${interaction.user.username} está pagando la factura ${invoice.invoice}`,
+        "info"
+      );
+
       wallet.payInvoice({
         paymentRequest: invoice.invoice,
         onSuccess: () => {
+          log(
+            `@${interaction.user.username} pagó la factura ${invoice.invoice}`,
+            "info"
+          );
+
           interaction.editReply({
             content: `Enviaste ${amount} satoshis a ${address} desde tu billetera`,
             ephemeral: true,
           });
         },
         onError: () => {
+          log(
+            `@${interaction.user.username} no pudo pagar la factura ${invoice.invoice}`,
+            "err"
+          );
+
           EphemeralMessageResponse(
             interaction,
             "Ocurrió un error al realizar el pago."

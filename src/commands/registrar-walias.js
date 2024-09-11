@@ -7,7 +7,10 @@ import {
 import { getOrCreateAccount, LNDOMAIN } from "../handlers/accounts.js";
 import {
   EphemeralMessageResponse,
+  existIdentity,
+  getSignupInfo,
   normalizeLNDomain,
+  validateRelaysStatus,
 } from "../utils/helperFunctions.js";
 import { AuthorConfig } from "../utils/helperConfig.js";
 import { log } from "../handlers/log.js";
@@ -42,8 +45,11 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
 
     const username = interaction.options.get(`nombre`).value;
+    log(`@${user.username} ejecutó /registrar-walias ${username}`, "info");
+
     if (!regexUserName.test(username))
       return interaction.editReply({
         content:
@@ -61,12 +67,12 @@ const invoke = async (interaction) => {
         }`,
       });
 
-    const signupInfo = await wallet.federation.signUpInfo();
+    const signupInfo = await getSignupInfo(wallet.federation);
     if (!signupInfo || !signupInfo.enabled)
       return interaction.editReply({ content: "Registro deshabilitado" });
 
-    const existIdentity = await wallet.federation.existIdentity(username);
-    if (existIdentity)
+    const nameWasTaken = await existIdentity(federation, username);
+    if (nameWasTaken)
       return interaction.editReply({
         content:
           "El nombre de usuario que elegiste ya existe en la base de datos.",

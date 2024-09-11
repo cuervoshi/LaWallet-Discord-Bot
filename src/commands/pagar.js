@@ -1,6 +1,9 @@
 import { SlashCommandBuilder } from "discord.js";
 import { getOrCreateAccount } from "../handlers/accounts.js";
-import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
+import {
+  EphemeralMessageResponse,
+  validateRelaysStatus,
+} from "../utils/helperFunctions.js";
 import { log } from "../handlers/log.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
@@ -25,20 +28,30 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply({ ephemeral: true });
-
-    const wallet = await getOrCreateAccount(user.id, user.username);
+    await validateRelaysStatus();
 
     const paymentRequest = interaction.options.get(`bolt11`).value;
+
+    log(`@${user.username} ejecutó /pagar ${paymentRequest}`, "info");
+
+    const wallet = await getOrCreateAccount(user.id, user.username);
 
     wallet.payInvoice({
       paymentRequest,
       onSuccess: () => {
+        log(`@${user.username} pago la factura ${paymentRequest}`, "info");
+
         interaction.editReply({
           content: `Pagaste la factura ${paymentRequest}`,
           ephemeral: true,
         });
       },
       onError: () => {
+        log(
+          `@${user.username} no pudo pagar la factura ${paymentRequest}`,
+          "err"
+        );
+
         EphemeralMessageResponse(interaction, "Ocurrió un error");
       },
     });

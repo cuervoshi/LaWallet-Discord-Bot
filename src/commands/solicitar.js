@@ -5,7 +5,10 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 import { getOrCreateAccount } from "../handlers/accounts.js";
-import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
+import {
+  EphemeralMessageResponse,
+  validateRelaysStatus,
+} from "../utils/helperFunctions.js";
 import { AuthorConfig } from "../utils/helperConfig.js";
 import { formatter } from "../utils/helperFormatter.js";
 import { log } from "../handlers/log.js";
@@ -38,8 +41,12 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply();
+    await validateRelaysStatus();
+
     const amount = parseInt(interaction.options.get(`monto`).value);
     const description = interaction.options.get(`descripcion`);
+
+    log(`@${user.username} ejecutó el comando /solicitar ${amount}`, "info");
 
     if (amount <= 0)
       return FollowUpEphemeralResponse(

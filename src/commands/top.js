@@ -4,6 +4,7 @@ import { getSumOfDonationAmounts, getTopRanking } from "../handlers/donate.js";
 import { AuthorConfig } from "../utils/helperConfig.js";
 import { formatter } from "../utils/helperFormatter.js";
 import { log } from "../handlers/log.js";
+import { validateRelaysStatus } from "../utils/helperFunctions.js";
 
 const availableTypes = ["pozo", "comunidad"];
 
@@ -31,6 +32,8 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply();
+    await validateRelaysStatus();
+
     const typeParam = interaction.options.get(`tipo`);
 
     // const wallet = await getOrCreateAccount(user.id, user.username);
@@ -38,6 +41,8 @@ const invoke = async (interaction) => {
       typeParam?.value && availableTypes.includes(typeParam.value)
         ? typeParam.value
         : "pozo";
+
+    log(`@${user.username} ejecutó /top ${cleanedType}`, "info");
 
     const isPool = cleanedType === "pozo";
 

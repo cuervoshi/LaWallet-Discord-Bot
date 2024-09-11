@@ -9,7 +9,7 @@ import WebSocket from "ws";
 Object.assign(global, { WebSocket });
 
 export const connectedNdk = new NDK({
-  explicitRelayUrls: ["wss://relay.lawallet.ar/"],
+  explicitRelayUrls: ["wss://relay.lawallet.ar/", "wss://relay.hodl.ar/"],
   autoConnectUserRelays: false,
   autoFetchUserMutelist: false,
 });
@@ -18,23 +18,7 @@ const mongoHost = process.env.MONGO_HOST || "mongo";
 const mongoPort = process.env.MONGO_PORT || 27017;
 const mongoDB = process.env.MONGO_DB || "lnbot";
 
-let knownRelays = [];
-
-function validateRelaysStatus() {
-  let connectedRelays = connectedNdk.pool.connectedRelays();
-
-  knownRelays.map((relayUrl) => {
-    let isRelayConnected = connectedRelays.find(
-      (relay) => relay.url === relayUrl
-    );
-
-    if (!isRelayConnected) {
-      let disconnectedRelay = connectedNdk.pool.relays.get(relayUrl);
-
-      if (disconnectedRelay) disconnectedRelay.connect();
-    }
-  });
-}
+export const knownRelays = [];
 
 async function runBot() {
   // Create a new Client with the Guilds intent
@@ -67,12 +51,12 @@ async function runBot() {
   client.login(process.env.BOT_TOKEN);
 
   connectedNdk.pool.relays.forEach(async (relay) => {
-    console.log("conectando relay: ", relay.url);
+    log(`conectando relay: ${relay.url}`, "done");
     knownRelays.push(relay.url);
     await relay.connect();
   });
 
-  setInterval(validateRelaysStatus, 30000);
+  // setInterval(validateRelaysStatus, 30000);
 
   log("Started connecting to MongoDB...", "warn");
 

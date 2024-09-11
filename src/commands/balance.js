@@ -9,9 +9,9 @@ import { formatter } from "../utils/helperFormatter.js";
 import {
   EphemeralMessageResponse,
   publishProfile,
+  validateRelaysStatus,
 } from "../utils/helperFunctions.js";
 import { log } from "../handlers/log.js";
-
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {
   const command = new SlashCommandBuilder()
@@ -25,9 +25,12 @@ const create = () => {
 const invoke = async (interaction) => {
   try {
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
 
     const user = interaction.user;
     if (!user) throw new Error("No user interaction found");
+
+    log(`@${user.username} utilizó /balance`, "info");
 
     const userWallet = await getOrCreateAccount(user.id, user.username);
     const sats = await userWallet.getBalance("BTC");
@@ -35,6 +38,7 @@ const invoke = async (interaction) => {
     if (!userWallet.lnurlpData) await userWallet.fetch();
 
     if (!userWallet.nostr) {
+      log(`Publicando perfil de @${user.username}`, "info");
       await publishProfile(userWallet, user);
     }
 
@@ -67,6 +71,11 @@ const invoke = async (interaction) => {
         .setLabel("Ir a mi perfil")
         .setURL(`${profileUrl}`),
     ]);
+
+    log(
+      `Balance de @${user.username} resuelto: ${sats / 1000} satoshis`,
+      "info"
+    );
 
     await interaction.editReply({
       embeds: [embed],

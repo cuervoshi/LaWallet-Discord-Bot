@@ -1,12 +1,15 @@
 import { ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { getOrCreateAccount } from "../../handlers/accounts.js";
 import { log } from "../../handlers/log.js";
+import { validateRelaysStatus } from "../../utils/helperFunctions.js";
 
 const customId = "pay";
 
 const invoke = async (interaction) => {
   try {
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
+
     const payUrl = interaction.message.embeds[0].fields.find(
       (field) => field.name === "Solicitud de pago"
     );

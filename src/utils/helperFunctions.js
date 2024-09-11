@@ -1,4 +1,9 @@
 import NDK, { NDKEvent, NDKRelaySet } from "@nostr-dev-kit/ndk";
+import { connectedNdk, knownRelays } from "../../Bot.js";
+import { log } from "../handlers/log.js";
+import SimpleCache from "../handlers/SimpleCache.js";
+
+const signupCache = new SimpleCache();
 
 const validateAmountAndBalance = (amount, balance) => {
   if (amount <= 0)
@@ -106,10 +111,63 @@ const publishProfile = async (wallet, user) => {
   }
 };
 
+async function validateRelaysStatus() {
+  let connectedRelays = connectedNdk.pool.connectedRelays();
+
+  await Promise.all(
+    knownRelays.map((relayUrl) => {
+      let isRelayConnected = connectedRelays.find(
+        (relay) => relay.url === relayUrl
+      );
+
+      if (!isRelayConnected) {
+        let disconnectedRelay = connectedNdk.pool.relays.get(relayUrl);
+
+        if (disconnectedRelay) {
+          log(`reconectando relay: ${disconnectedRelay.url}`, "done");
+          disconnectedRelay.connect();
+        }
+      }
+    })
+  );
+
+  return;
+}
+
+async function getSignupInfo(federation) {
+  const infoFromCache = signupCache.get(`signup:${federation.id}`);
+  if (infoFromCache) return infoFromCache;
+
+  const signupInfo = await federation.signUpInfo();
+
+  let ttl = 86400 * 1000; // 24 hours
+  signupCache.set(`signup:${federation.id}`, signupInfo, ttl);
+
+  return signupInfo;
+}
+
+async function existIdentity(federation, username) {
+  const infoFromCache = signupCache.get(`signup:${federation.id}:${username}`);
+  if (infoFromCache) return infoFromCache;
+
+  const existIdentity = await federation.existIdentity(username);
+
+  if (existIdentity) {
+    let ttl = 86400 * 1000; // 24 hours
+    signupCache.set(`signup:${federation.id}:${username}`, true, ttl);
+    return true;
+  }
+
+  return false;
+}
+
 export {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
   handleBotResponse,
   publishProfile,
   validateAmountAndBalance,
+  validateRelaysStatus,
+  getSignupInfo,
+  existIdentity,
 };

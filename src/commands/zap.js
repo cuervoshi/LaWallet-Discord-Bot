@@ -4,6 +4,7 @@ import {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
   validateAmountAndBalance,
+  validateRelaysStatus,
 } from "../utils/helperFunctions.js";
 import { updateUserRank } from "../handlers/donate.js";
 import { log } from "../handlers/log.js";
@@ -22,12 +23,6 @@ const create = () => {
         .setDescription("La cantidad de satoshis a transferir")
         .setRequired(true)
     );
-  // .addStringOption((opt) =>
-  //   opt
-  //     .setName("message")
-  //     .setDescription("Un mensaje de la transferencia")
-  //     .setRequired(false)
-  // );
 
   return command.toJSON();
 };
@@ -39,8 +34,15 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
+
     const receiver = interaction.options.get(`user`);
     const amount = parseInt(interaction.options.get(`monto`).value);
+
+    log(
+      `@${user.username} ejecutó /zap ${receiver.user.username} ${amount}`,
+      "info"
+    );
 
     if (amount <= 0)
       return FollowUpEphemeralResponse(
@@ -96,6 +98,11 @@ const invoke = async (interaction) => {
       try {
         await updateUserRank(interaction.user.id, "comunidad", amount);
 
+        log(
+          `@${user.username} pago la factura del zap hacia @${receiver.user.username}`,
+          "info"
+        );
+
         await interaction.deleteReply();
 
         await interaction.followUp({
@@ -107,10 +114,17 @@ const invoke = async (interaction) => {
       }
     };
 
+    log(`@${user.username} va a pagar la factura ${invoiceDetails.pr}`, "info");
+
     await senderWallet.payInvoice({
       paymentRequest: invoiceDetails.pr,
       onSuccess,
       onError: () => {
+        log(
+          `@${user.username} tuvo un error al realizar el pago del zap hacia @${receiver.user.username}`,
+          "err"
+        );
+
         EphemeralMessageResponse(interaction, "Ocurrió un error");
       },
     });

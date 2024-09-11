@@ -13,6 +13,7 @@ import { AuthorConfig } from "../../utils/helperConfig.js";
 import {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
+  validateRelaysStatus,
 } from "../../utils/helperFunctions.js";
 
 const customId = "claim";
@@ -88,7 +89,7 @@ const claimFaucet = async (faucet, interaction) => {
 
         EphemeralMessageResponse(
           interaction,
-          "Ocurrió un error al reclamar la factura"
+          "Ocurrió un error al reclamar la factura, intenta nuevamente. Si el problema persiste, es probable que la totalidad del faucet ya haya sido reclamada."
         );
       },
     });
@@ -100,7 +101,7 @@ const claimFaucet = async (faucet, interaction) => {
 
     EphemeralMessageResponse(
       interaction,
-      "Ocurrió un error al reclamar la factura"
+      "Ocurrió un error al reclamar la factura, intenta nuevamente. Si el problema persiste, es probable que la totalidad del faucet ya haya sido reclamada."
     );
     return;
   }
@@ -177,6 +178,7 @@ const updateMessage = async (faucetId, fieldInfo, message) => {
 const invoke = async (interaction) => {
   try {
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
 
     const footerContent = interaction.message.embeds[0]?.footer?.text;
     const faucetSubStr = footerContent ? footerContent.indexOf(" ") : -1;
@@ -226,9 +228,10 @@ const invoke = async (interaction) => {
       `Error cuando @${interaction.user.username} intentó reclamar un faucet - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
+
     EphemeralMessageResponse(
       interaction,
-      "Ocurrió un error al reclamar la factura"
+      "Ocurrió un error al reclamar la factura, intenta nuevamente. Si el problema persiste, es probable que la totalidad del faucet ya haya sido reclamada."
     );
   }
 };

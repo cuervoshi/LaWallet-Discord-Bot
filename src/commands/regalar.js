@@ -10,6 +10,7 @@ import {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
   validateAmountAndBalance,
+  validateRelaysStatus,
 } from "../utils/helperFunctions.js";
 import { log } from "../handlers/log.js";
 
@@ -45,9 +46,12 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply();
+    await validateRelaysStatus();
 
     const amount = parseInt(interaction.options.get(`monto`).value);
     const maxUses = parseInt(interaction.options.get(`usos`).value);
+
+    log(`@${user.username} ejecutó /regalar ${amount} ${maxUses}`, "info");
 
     if (!amount || !maxUses || amount <= 0 || maxUses <= 0)
       return FollowUpEphemeralResponse(
@@ -92,6 +96,11 @@ const invoke = async (interaction) => {
       receiverPubkey: accountFaucet.pubkey,
       milisatoshis: amount * 1000,
     });
+
+    log(
+      `@${user.username} creo una nueva cuenta faucet: ${accountFaucet.pubkey}`,
+      "info"
+    );
 
     await wallet.payInvoice({
       paymentRequest: zapToAccountFaucet.pr,
@@ -139,6 +148,11 @@ const invoke = async (interaction) => {
           components: [row],
         });
 
+        log(
+          `@${user.username} transfirió ${amount} sats a la cuenta faucet: ${accountFaucet.pubkey}`,
+          "info"
+        );
+
         await updateFaucetMessage(
           new_faucet,
           editedReply.channelId,
@@ -146,6 +160,11 @@ const invoke = async (interaction) => {
         );
       },
       onError: () => {
+        log(
+          `@${user.username} intentó transferir a la cuenta faucet: ${accountFaucet.pubkey} pero ocurrió un error en el pago`,
+          "err"
+        );
+
         EphemeralMessageResponse(
           interaction,
           "Ocurrió un error al transferir los fondos a la cuenta faucet"
@@ -157,6 +176,7 @@ const invoke = async (interaction) => {
       `Error en el comando /regalar ejecutado por @${interaction.user.username} - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
+
     EphemeralMessageResponse(interaction, "Ocurrió un error");
   }
 };

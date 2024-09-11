@@ -4,6 +4,7 @@ import {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
   validateAmountAndBalance,
+  validateRelaysStatus,
 } from "../utils/helperFunctions.js";
 import { updateUserRank } from "../handlers/donate.js";
 import lnurl from "lnurl-pay";
@@ -32,8 +33,11 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply();
+    await validateRelaysStatus();
 
     const amount = parseInt(interaction.options.get(`monto`).value);
+
+    log(`@${user.username} ejecutó /donar ${amount}`, "info");
 
     const wallet = await getOrCreateAccount(user.id, user.username);
     const senderBalance = await wallet.getBalance("BTC");
@@ -84,9 +88,16 @@ const invoke = async (interaction) => {
               }
             );
 
+          log(`@${user.username} donó ${amount} al pozo`, "info");
+
           return interaction.editReply({ embeds: [embed] });
         },
         onError: () => {
+          log(
+            `@${user.username} no pudo realizar el pago de /donar ${amount}`,
+            "err"
+          );
+
           EphemeralMessageResponse(
             interaction,
             "Ocurrió un error al realizar el pago."
@@ -99,6 +110,7 @@ const invoke = async (interaction) => {
       `Error en el comando /donar ejecutado por @${interaction.user.username} - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
+
     EphemeralMessageResponse(interaction, "Ocurrió un error");
   }
 };

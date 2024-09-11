@@ -4,7 +4,10 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 import { getOrCreateAccount } from "../handlers/accounts.js";
-import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
+import {
+  EphemeralMessageResponse,
+  validateRelaysStatus,
+} from "../utils/helperFunctions.js";
 import QRCode from "qrcode";
 import { log } from "../handlers/log.js";
 
@@ -30,7 +33,11 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
+
     const amount = parseInt(interaction.options.get(`monto`).value);
+
+    log(`@${user.username} ejecutó /recargar ${amount}`, "info");
 
     if (amount <= 0)
       return EphemeralMessageResponse(
@@ -61,6 +68,11 @@ const invoke = async (interaction) => {
           value: `${amount}`,
         },
       ]);
+
+    log(
+      `@${user.username} ejecutó /recargar ${amount} y se le creo un invoice: ${invoiceDetails.pr}`,
+      "info"
+    );
 
     return interaction.editReply({
       embeds: [embed],

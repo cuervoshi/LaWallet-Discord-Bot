@@ -7,7 +7,10 @@ import {
 import { getOrCreateAccount } from "../handlers/accounts.js";
 import { closeFaucet, getAllOpenFaucets } from "../handlers/faucet.js";
 import { AuthorConfig } from "../utils/helperConfig.js";
-import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
+import {
+  EphemeralMessageResponse,
+  validateRelaysStatus,
+} from "../utils/helperFunctions.js";
 import { log } from "../handlers/log.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
@@ -28,6 +31,9 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
+
+    log(`@${user.username} ejecutó /cerrar-faucets`, "info");
 
     const faucets = await getAllOpenFaucets(user.id);
 
@@ -115,11 +121,29 @@ const invoke = async (interaction) => {
             await faucetWallet.payInvoice({
               paymentRequest: invoiceDetails.pr,
               onSuccess: async () => {
+                log(
+                  `@${
+                    user.username
+                  } ejecutó /cerrar-faucets: cerró el faucet ${faucetId} y se le reintegraron ${
+                    milisatoshis / 1000
+                  } sats`,
+                  "info"
+                );
+
                 msgOutput += `Faucet ${faucetId} fue cerrado y retornaron ${
                   milisatoshis / 1000
                 } sats a tu cuenta.\n`;
               },
               onError: async () => {
+                log(
+                  `@${
+                    user.username
+                  } ejecutó /cerrar-faucets: cerró el faucet ${faucetId} pero ocurrió un error al reintegrar ${
+                    milisatoshis / 1000
+                  } sats`,
+                  "err"
+                );
+
                 msgOutput += `Faucet ${faucetId} fue cerrado pero ocurrió un error al reintegrar los fondos (${
                   milisatoshis / 1000
                 } sats).\n`;
@@ -142,6 +166,7 @@ const invoke = async (interaction) => {
             : "Se cerraron todos los faucets abiertos, no había fondos para retornar.",
         });
 
+      log(`@${user.username} cerró todos sus faucets`, "info");
       interaction.editReply({ embeds: [embed], ephemeral: true });
     }
   } catch (err) {

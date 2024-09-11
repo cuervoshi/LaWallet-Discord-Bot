@@ -16,6 +16,8 @@ const create = () => {
 // Called by the interactionCreate event listener when the corresponding command is invoked
 const invoke = async (interaction) => {
   try {
+    await interaction.deferReply({ ephemeral: true });
+
     let cmdOutput = [];
     commandsArray.forEach(async (cmd) => {
       if (cmd.name != `ayuda`) {
@@ -56,7 +58,7 @@ const invoke = async (interaction) => {
         ...cmdOutput.map((cmd) => cmd)
       );
 
-    interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.editReply({ embeds: [embed], ephemeral: true });
   } catch (err) {
     console.log(err);
     EphemeralMessageResponse(interaction, "Ocurrió un error");

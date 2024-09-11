@@ -22,6 +22,8 @@ const invoke = async (interaction) => {
     const user = interaction.user;
     if (!user) return;
 
+    log(`@${user.username} ejecutó /exportar`, "info");
+
     const wallet = await getOrCreateAccount(user.id);
 
     const embed = new EmbedBuilder()

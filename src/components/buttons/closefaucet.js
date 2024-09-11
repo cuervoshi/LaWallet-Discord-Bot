@@ -5,6 +5,7 @@ import { AuthorConfig } from "../../utils/helperConfig.js";
 import {
   EphemeralMessageResponse,
   FollowUpEphemeralResponse,
+  validateRelaysStatus,
 } from "../../utils/helperFunctions.js";
 import { log } from "../../handlers/log.js";
 
@@ -16,6 +17,8 @@ const invoke = async (interaction) => {
     if (!user) return;
 
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
+
     const footerContent = interaction.message.embeds[0]?.footer?.text;
     const faucetSubStr = footerContent ? footerContent.indexOf(" ") : -1;
 
@@ -26,6 +29,11 @@ const invoke = async (interaction) => {
 
     if (!faucetId)
       return EphemeralMessageResponse(interaction, "No se encontró el faucet");
+
+    log(
+      `${user.username} presionó el boton cerrar faucet, en el faucet ${faucetId}`,
+      "info"
+    );
 
     const faucet = await getFaucet(faucetId);
 
@@ -87,6 +95,15 @@ const invoke = async (interaction) => {
       await faucetWallet.payInvoice({
         paymentRequest: invoiceDetails.pr,
         onSuccess: async () => {
+          log(
+            `${
+              user.username
+            } cerró el faucet ${faucetId} y se le reintegraron ${
+              milisatoshis / 1000
+            } sats`,
+            "done"
+          );
+
           FollowUpEphemeralResponse(
             interaction,
             `Cerraste el faucet exitosamente, se reintegraron ${
@@ -95,6 +112,15 @@ const invoke = async (interaction) => {
           );
         },
         onError: async () => {
+          log(
+            `${
+              user.username
+            } cerró el faucet ${faucetId} pero ocurrió un error al reintegrar ${
+              milisatoshis / 1000
+            } sats`,
+            "err"
+          );
+
           FollowUpEphemeralResponse(
             interaction,
             `Ocurrió un error al reintegrar ${

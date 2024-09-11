@@ -3,6 +3,7 @@ services:
   bot:
     build: .
     container_name: lawallet-bot
+    restart: always
     depends_on:
       - mongo
     env_file:

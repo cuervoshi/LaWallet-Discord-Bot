@@ -4,6 +4,7 @@ import { SimpleLock } from "../../handlers/SimpleLock.js";
 import {
   EphemeralMessageResponse,
   normalizeLNDomain,
+  validateRelaysStatus,
 } from "../../utils/helperFunctions.js";
 
 const customId = "registerhandle";
@@ -21,9 +22,19 @@ async function processQueue() {
 async function handleClaimHandle(wallet, username, interaction) {
   const release = await lock.acquire();
 
+  log(
+    `Lock de reclamar faucet adquirido para ${interaction.user.username}`,
+    "info"
+  );
+
   try {
     const registered = await wallet.registerHandle(username);
     if (registered) {
+      log(
+        `@${interaction.user.username} registró el walias ${username}`,
+        "info"
+      );
+
       EphemeralMessageResponse(
         interaction,
         `El usuario ${username}@${normalizeLNDomain(
@@ -31,6 +42,11 @@ async function handleClaimHandle(wallet, username, interaction) {
         )} fue registrado con éxito.`
       );
     } else {
+      log(
+        `@${interaction.user.username} intentó registrar el walias ${username} pero ocurrió un error`,
+        "err"
+      );
+
       EphemeralMessageResponse(
         interaction,
         `Ocurrió un error al registrar ${username}@${normalizeLNDomain(
@@ -39,6 +55,11 @@ async function handleClaimHandle(wallet, username, interaction) {
       );
     }
   } finally {
+    log(
+      `Lock de reclamar faucet de ${interaction.user.username} liberado`,
+      "info"
+    );
+
     release();
     return;
   }
@@ -47,6 +68,7 @@ async function handleClaimHandle(wallet, username, interaction) {
 const invoke = async (interaction) => {
   try {
     await interaction.deferReply({ ephemeral: true });
+    await validateRelaysStatus();
 
     const footerContent = interaction.message.embeds[0]?.footer?.text;
     const faucetSubStr = footerContent ? footerContent.indexOf(" ") : -1;
