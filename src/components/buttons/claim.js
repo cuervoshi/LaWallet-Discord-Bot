@@ -82,7 +82,7 @@ const claimFaucet = async (faucet, interaction) => {
       },
       onError: (err) => {
         log(
-          `Error cuando @${interaction.username} intentó reclamar un faucet (faucet ${faucetId}) - Mensaje: ${err}`,
+          `Error cuando @${interaction.user.username} intentó reclamar un faucet (faucet ${faucetId}) - Mensaje: ${err}`,
           "err"
         );
 
@@ -94,7 +94,7 @@ const claimFaucet = async (faucet, interaction) => {
     });
   } catch (err) {
     log(
-      `Error cuando @${interaction.username} intentó reclamar un faucet - Código de error ${err.code} Mensaje: ${err.message}`,
+      `Error cuando @${interaction.user.username} intentó reclamar un faucet - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
 
@@ -223,7 +223,7 @@ const invoke = async (interaction) => {
     }
   } catch (err) {
     log(
-      `Error cuando @${interaction.username} intentó reclamar un faucet - Código de error ${err.code} Mensaje: ${err.message}`,
+      `Error cuando @${interaction.user.username} intentó reclamar un faucet - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
     EphemeralMessageResponse(

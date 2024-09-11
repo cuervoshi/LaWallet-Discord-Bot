@@ -57,7 +57,7 @@ const invoke = async (interaction) => {
     }
   } catch (err) {
     log(
-      `Error cuando @${interaction.username} intentó pagar una factura de /solicitar - Código de error ${err.code} Mensaje: ${err.message}`,
+      `Error cuando @${interaction.user.username} intentó pagar una factura de /solicitar - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
     return FollowUpEphemeralResponse(interaction, "Ocurrió un error");

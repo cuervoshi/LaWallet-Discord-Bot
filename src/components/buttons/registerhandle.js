@@ -80,7 +80,7 @@ const invoke = async (interaction) => {
     }
   } catch (err) {
     log(
-      `Error cuando @${interaction.username} intentó registrar un walias - Código de error ${err.code} Mensaje: ${err.message}`,
+      `Error cuando @${interaction.user.username} intentó registrar un walias - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
     EphemeralMessageResponse(

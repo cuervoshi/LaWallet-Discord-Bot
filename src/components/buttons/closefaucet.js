@@ -131,7 +131,7 @@ const invoke = async (interaction) => {
     }
   } catch (err) {
     log(
-      `Error cuando @${interaction.username} intentó cerrar un faucet - Código de error ${err.code} Mensaje: ${err.message}`,
+      `Error cuando @${interaction.user.username} intentó cerrar un faucet - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
     EphemeralMessageResponse(interaction, "Ocurrió un error");

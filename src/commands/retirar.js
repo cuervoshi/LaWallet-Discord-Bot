@@ -72,7 +72,7 @@ const invoke = async (interaction) => {
     }
   } catch (err) {
     log(
-      `Error en el comando /retirar ejecutado por @${interaction.username} - Código de error ${err.code} Mensaje: ${err.message}`,
+      `Error en el comando /retirar ejecutado por @${interaction.user.username} - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
 

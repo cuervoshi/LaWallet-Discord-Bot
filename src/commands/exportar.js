@@ -52,7 +52,7 @@ const invoke = async (interaction) => {
     }, 15000);
   } catch (err) {
     log(
-      `Error en el comando /exportar ejecutado por @${interaction.username} - Código de error ${err.code} Mensaje: ${err.message}`,
+      `Error en el comando /exportar ejecutado por @${interaction.user.username} - Código de error ${err.code} Mensaje: ${err.message}`,
       "err"
     );
     EphemeralMessageResponse(interaction, "Ocurrió un error");
