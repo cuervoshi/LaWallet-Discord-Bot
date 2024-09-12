@@ -1,13 +1,12 @@
 import { SlashCommandBuilder } from "discord.js";
 import { getOrCreateAccount } from "../handlers/accounts.js";
+import { updateUserRank } from "../handlers/donate.js";
+import { log } from "../handlers/log.js";
 import {
   EphemeralMessageResponse,
-  FollowUpEphemeralResponse,
   validateAmountAndBalance,
   validateRelaysStatus,
 } from "../utils/helperFunctions.js";
-import { updateUserRank } from "../handlers/donate.js";
-import { log } from "../handlers/log.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {
@@ -22,6 +21,12 @@ const create = () => {
         .setName("monto")
         .setDescription("La cantidad de satoshis a transferir")
         .setRequired(true)
+    )
+    .addStringOption((opt) =>
+      opt
+        .setName("message")
+        .setDescription("Un mensaje de la transferencia")
+        .setRequired(false)
     );
 
   return command.toJSON();
@@ -33,9 +38,7 @@ const invoke = async (interaction) => {
     const user = interaction.user;
     if (!user) return;
 
-    await interaction.deferReply({ ephemeral: true });
     await validateRelaysStatus();
-
     const receiver = interaction.options.get(`user`);
     const amount = parseInt(interaction.options.get(`monto`).value);
 
@@ -45,7 +48,7 @@ const invoke = async (interaction) => {
     );
 
     if (amount <= 0)
-      return FollowUpEphemeralResponse(
+      return EphemeralMessageResponse(
         interaction,
         "No se permiten saldos negativos"
       );
@@ -64,13 +67,13 @@ const invoke = async (interaction) => {
     );
 
     if (!senderWallet || !receiverWallet)
-      return FollowUpEphemeralResponse(
+      return EphemeralMessageResponse(
         interaction,
         "Ocurrió un error al obtener la información del usuario"
       );
 
     if (senderWallet.pubkey === receiverWallet.pubkey)
-      return FollowUpEphemeralResponse(
+      return EphemeralMessageResponse(
         interaction,
         "No puedes enviarte sats a vos mismo."
       );
@@ -82,20 +85,22 @@ const invoke = async (interaction) => {
     );
 
     if (!isValidAmount.status)
-      return FollowUpEphemeralResponse(interaction, isValidAmount.content);
+      return EphemeralMessageResponse(interaction, isValidAmount.content);
 
-    // const message = interaction.options.get(`message`)
-    //   ? interaction.options.get(`message`)
-    //   : {
-    //       value: `${user.username} te envío ${amount} sats a través de discord`,
-    //     };
+    const message = interaction.options.get(`message`)
+      ? interaction.options.get(`message`)
+      : {
+          value: `${user.username} te envío ${amount} sats a través de discord`,
+        };
 
     const invoiceDetails = await receiverWallet.generateInvoice({
       milisatoshis: msatsAmount,
+      comment: message.value,
     });
 
     const onSuccess = async () => {
       try {
+        await interaction.deferReply();
         await updateUserRank(interaction.user.id, "comunidad", amount);
 
         log(
@@ -103,10 +108,9 @@ const invoke = async (interaction) => {
           "info"
         );
 
-        await interaction.deleteReply();
-
         await interaction.followUp({
           content: `${interaction.user.toString()} envió ${amount} satoshis a ${receiverData.toString()}`,
+          ephemeral: false,
         });
       } catch (err) {
         console.log(err);

@@ -78,4 +78,4 @@ const getSumOfDonationAmounts = async (type) => {
   }
 };
 
-export { updateUserRank, getTopRanking, getSumOfDonationAmounts };
+export { getSumOfDonationAmounts, getTopRanking, updateUserRank };

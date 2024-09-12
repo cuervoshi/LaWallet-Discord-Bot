@@ -62,6 +62,7 @@ const claimFaucet = async (faucet, interaction) => {
 
     const invoiceDetails = await userWallet.generateInvoice({
       milisatoshis: faucet.amount * 1000,
+      comment: `LNBot: Reclamo de faucet`,
     });
 
     await faucetWallet.payInvoice({

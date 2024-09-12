@@ -1,8 +1,8 @@
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import { getOrCreateAccount } from "../handlers/accounts.js";
-import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
-import { AuthorConfig } from "../utils/helperConfig.js";
+import { getOrCreateAccount, LNDOMAIN } from "../handlers/accounts.js";
 import { log } from "../handlers/log.js";
+import { AuthorConfig } from "../utils/helperConfig.js";
+import { EphemeralMessageResponse } from "../utils/helperFunctions.js";
 
 // Creates an object with the data required by Discord's API to create a SlashCommand
 const create = () => {
@@ -32,8 +32,7 @@ const invoke = async (interaction) => {
       .addFields(
         {
           name: `Exportaste tu cuenta`,
-          value:
-            "A continuación podrás copiar la clave privada hexadecimal de tu cuenta.\nIngresa en https://app.lawallet.ar/login para conectarte",
+          value: `A continuación podrás copiar la clave privada hexadecimal de tu cuenta.\nIngresa en ${LNDOMAIN} para conectarte`,
         },
         { name: `\u200B`, value: `\u200B` },
         { name: "Clave privada", value: wallet.signer.privateKey },

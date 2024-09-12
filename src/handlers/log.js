@@ -6,34 +6,49 @@ import chalk from "chalk";
  * @param {'info' | 'err' | 'warn' | 'done' | undefined} style
  */
 const log = (string, style) => {
+  const date = new Date();
+
+  const [hour, minutes, seconds] = [
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds(),
+  ];
+
   switch (style) {
     case "info": {
-      console.log(chalk.blue("[INFO] " + string));
+      console.log(
+        chalk.blue(`[INFO] ${hour}:${minutes}:${seconds} • ${string}`)
+      );
 
       break;
     }
 
     case "err": {
-      console.error(chalk.red("[ERROR] " + string));
+      console.error(
+        chalk.red(`[ERROR] ${hour}:${minutes}:${seconds} • ${string}`)
+      );
 
       break;
     }
 
     case "warn": {
-      console.warn(chalk.yellow("[WARNING] " + string));
+      console.warn(
+        chalk.yellow(`[WARNING] ${hour}:${minutes}:${seconds} • ${string}`)
+      );
 
       break;
     }
 
     case "done": {
-      console.log(chalk.green("[SUCCESS] " + string));
+      console.log(
+        chalk.green(`[SUCCESS] ${hour}:${minutes}:${seconds} • ${string}`)
+      );
 
       break;
     }
 
     default: {
-      console.log(string);
-
+      console.log(`${hour}:${minutes}:${seconds} • ${string}`);
       break;
     }
   }
