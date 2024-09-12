@@ -4,6 +4,7 @@ import {} from "dotenv/config";
 import fs from "fs";
 import { connect } from "mongoose";
 import { log } from "./src/handlers/log.js";
+import { requiredEnvVar } from "./src/utils/helperFunctions.js";
 
 import WebSocket from "ws";
 Object.assign(global, { WebSocket });
@@ -14,9 +15,8 @@ export const connectedNdk = new NDK({
   autoFetchUserMutelist: false,
 });
 
-const mongoHost = process.env.MONGO_HOST || "mongo";
-const mongoPort = process.env.MONGO_PORT || 27017;
-const mongoDB = process.env.MONGO_DB || "lnbot";
+const mongoURI = requiredEnvVar("MONGODB_URI");
+const botToken = requiredEnvVar("BOT_TOKEN");
 
 export const knownRelays = [];
 
@@ -48,7 +48,7 @@ async function runBot() {
   }
 
   // Login with the credentials stored in .env
-  client.login(process.env.BOT_TOKEN);
+  client.login(botToken);
 
   connectedNdk.pool.relays.forEach(async (relay) => {
     log(`conectando relay: ${relay.url}`, "done");
@@ -59,8 +59,6 @@ async function runBot() {
   // setInterval(validateRelaysStatus, 30000);
 
   log("Started connecting to MongoDB...", "warn");
-
-  const mongoURI = `mongodb://${mongoHost}:${mongoPort}/${mongoDB}`;
 
   connect(mongoURI)
     .then(() => {

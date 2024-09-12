@@ -3,13 +3,11 @@
 Rename .env.example to .env and replace your enviroment vars:
 
 ```env
-CLIENT_TOKEN=YOUR_BOT_TOKEN_ID
-POOL_ADDRESS=pozo@lacrypta.ar
-LIGHTNING_DOMAIN=https://lawallet.ar
+BOT_TOKEN=YOUR_BOT_TOKEN_ID
+MONGODB_URI=mongodb+srv://<username>:<password>@<url>/<dbname>
 
-MONGO_HOST=localhost
-MONGO_PORT=27017
-MONGO_DB=lnbot
+POOL_ADDRESS=pozo@lacrypta.ar
+LIGHTNING_DOMAIN=https://lnbot.io
 
 SALT=123456789 // for sk encrypt
 ```

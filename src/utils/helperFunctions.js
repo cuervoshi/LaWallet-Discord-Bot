@@ -5,6 +5,14 @@ import SimpleCache from "../handlers/SimpleCache.js";
 
 export const signupCache = new SimpleCache();
 
+export const requiredEnvVar = (key) => {
+  const envVar = process.env[key];
+  if (undefined === envVar) {
+    throw new Error(`Environment process ${key} must be defined`);
+  }
+  return envVar;
+};
+
 const validateAmountAndBalance = (amount, balance) => {
   if (amount <= 0)
     return {
