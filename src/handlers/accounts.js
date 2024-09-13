@@ -57,12 +57,12 @@ const getOrCreateAccount = async (discord_id, discord_username) => {
       });
 
       await accountWallet.fetch();
-      accountsCache.set(`account:${discord_id}`, accountWallet, 3600000);
+      accountsCache.set(`account:${discord_id}`, accountWallet, 7200000);
       return accountWallet;
     }
 
     const createdAccount = createAccount(discord_id, discord_username);
-    accountsCache.set(`account:${discord_id}`, createdAccount, 3600000);
+    accountsCache.set(`account:${discord_id}`, createdAccount, 7200000);
 
     return createdAccount;
   } catch (err) {

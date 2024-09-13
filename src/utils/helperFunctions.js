@@ -123,7 +123,7 @@ async function validateRelaysStatus() {
   let connectedRelays = connectedNdk.pool.connectedRelays();
 
   await Promise.all(
-    knownRelays.map((relayUrl) => {
+    knownRelays.map(async (relayUrl) => {
       let isRelayConnected = connectedRelays.find(
         (relay) => relay.url === relayUrl
       );
@@ -133,7 +133,7 @@ async function validateRelaysStatus() {
 
         if (disconnectedRelay) {
           log(`reconectando relay: ${disconnectedRelay.url}`, "done");
-          disconnectedRelay.connect();
+          await disconnectedRelay.connect();
         }
       }
     })
