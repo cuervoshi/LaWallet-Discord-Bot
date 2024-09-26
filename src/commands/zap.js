@@ -38,6 +38,8 @@ const invoke = async (interaction) => {
     const user = interaction.user;
     if (!user) return;
 
+    await interaction.deferReply({ ephemeral: true });
+
     await validateRelaysStatus();
     const receiver = interaction.options.get(`user`);
     const amount = parseInt(interaction.options.get(`monto`).value);
@@ -72,11 +74,11 @@ const invoke = async (interaction) => {
         "Ocurrió un error al obtener la información del usuario"
       );
 
-    if (senderWallet.pubkey === receiverWallet.pubkey)
-      return EphemeralMessageResponse(
-        interaction,
-        "No puedes enviarte sats a vos mismo."
-      );
+    // if (senderWallet.pubkey === receiverWallet.pubkey)
+    //   return EphemeralMessageResponse(
+    //     interaction,
+    //     "No puedes enviarte sats a vos mismo."
+    //   );
 
     const senderBalance = await senderWallet.getBalance("BTC");
     const isValidAmount = validateAmountAndBalance(
@@ -100,7 +102,6 @@ const invoke = async (interaction) => {
 
     const onSuccess = async () => {
       try {
-        await interaction.deferReply();
         await updateUserRank(interaction.user.id, "comunidad", amount);
 
         log(
@@ -108,9 +109,10 @@ const invoke = async (interaction) => {
           "info"
         );
 
-        await interaction.followUp({
+        await interaction.deleteReply();
+
+        await interaction.channel.send({
           content: `${interaction.user.toString()} envió ${amount} satoshis a ${receiverData.toString()}`,
-          ephemeral: false,
         });
       } catch (err) {
         console.log(err);
